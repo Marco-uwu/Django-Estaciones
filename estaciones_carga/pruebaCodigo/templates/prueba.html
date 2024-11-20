@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nice-forms.css</title>
+    <link rel="stylesheet" href="css/reset-only.css" />
+    <link rel="stylesheet" href="css/estilos.css" />
+  </head>
+  <body>
+    <form method="POST" action="{% url 'prueba' %}">
+		{% csrf_token %}
+		<button type="submit"> Ejecutar script</button>
+	</form>
+	
+	{% if messages %}
+		<ul>
+			{% for message in messages %}
+				<li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+					{{ message }}
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+  </body>
+</html>
+

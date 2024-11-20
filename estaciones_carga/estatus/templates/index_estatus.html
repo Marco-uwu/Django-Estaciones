@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estaciones de Carga</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
+        <link rel="icon" href="icons/circle-water-plug-svgrepo-com.svg" type="image/svg+xml">
+  </head>
+  <body>
+        <section style="background-color: #f9f9f9;">
+                <div>
+                        <h1 style="font-size:40px; text-align:center;">Estaciones de Carga</h1>
+                </div>
+        </section>
+    <div style="width: 90%; margin: 0 auto;">
+
+                <section>
+                        <div>
+                                <h1 style="font-size:35px;text-align: center;">
+                                        <img src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" alt="Icono de estaciones" width="48" height="48" style="margin-right: 16px;vertical-align: middle;">
+                                        Estado de estaciones
+                                </h1>
+                                <p style="font-size:17px;text-align: center;margin: 30px;">
+                                        Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
+                                </p>
+                        </div>
+                        <div>
+                                <table>
+                                        <tr>
+                                                <th>ID</th>
+                                                <th>Nombre</th>
+                                                <th>Ubicación</th>
+                                                <th>Estado</th>
+                                                <th>Acción</th>
+                                        </tr>
+
+                                        {% for estacion in estaciones %}
+                                                <tr>
+                                                        <td>{{ estacion.id }}</td>
+                                                        <td>{{ estacion.nombre }}</td>
+                                                        <td> <a href="{{ estacion.ubicacion }}"> Link </a> </td>
+                                                        <td>
+                                                                <button class="
+                                                                {% if estacion.estado == 'Disponible' %}
+                                                                        boton_disponible
+                                                                {% elif estacion.estado == 'No disponible' %}
+                                                                        boton_no_disponible
+                                                                {% elif estacion.estado == 'Fuera de servicio' %}
+                                                                        boton_fuera_servicio
+                                                                {% else %}
+                                                                        boton_mantenimiento
+                                                                {% endif %}
+                                                                "> {{ estacion.estado }} </button>
+                                                        </td>
+                                                        <td style="text-align: center;"><button class="boton_no_disponible">Apagar estación</button></td>
+                                                </tr>
+                                        {% endfor %}
+
+                                </table>
+                        </div>
+        </section>
+
+      </main>
+    </div>
+  </body>
+</html>
