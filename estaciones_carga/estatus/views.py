@@ -9,8 +9,9 @@ def estatus(request):
     estaciones = Estaciones.objects.all().values()
     resultado = ""
     if request.method == "POST":
+        nombre = request.POST.get("nombre_estacion")
         try:
-            resultado = "Ok"
+            resultado = "Ok " + nombre
             messages.success(request, resultado)
         except Exception as e:
             resultado = "Error"
