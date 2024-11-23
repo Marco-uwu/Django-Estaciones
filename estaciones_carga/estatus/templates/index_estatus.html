@@ -11,10 +11,13 @@
         <link rel="icon" href="icons/circle-water-plug-svgrepo-com.svg" type="image/svg+xml">
   </head>
   <body>
-        <section style="background-color: #f9f9f9;">
-                <div>
-                        <h1 style="font-size:40px; text-align:center;">Estaciones de Carga</h1>
-                </div>
+	          <section style="background-color: #FFFF;">
+          <div>
+                <h1 class="centered-title">
+                  <img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
+                  Estaciones de Carga
+                </h1>
+          </div>
         </section>
     <div style="width: 90%; margin: 0 auto;">
 
@@ -27,6 +30,15 @@
                                 <p style="font-size:17px;text-align: center;margin: 30px;">
                                         Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
                                 </p>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
                         </div>
                         <div>
                                 <table>
@@ -39,6 +51,10 @@
                                         </tr>
 
                                         {% for estacion in estaciones %}
+					<form method="POST" action="{% url 'estatus' %}">
+						{% csrf_token %}
+						<input type="hidden" name="dir_estacion" value="{{ estacion.dir_mac }}">
+						<input type="hidden" name="nombre_estacion" value="{{ estacion.nombre }}">
                                                 <tr>
                                                         <td>{{ estacion.id }}</td>
                                                         <td>{{ estacion.nombre }}</td>
@@ -56,8 +72,10 @@
                                                                 {% endif %}
                                                                 "> {{ estacion.estado }} </button>
                                                         </td>
-                                                        <td style="text-align: center;"><button class="boton_no_disponible">Apagar estación</button></td>
+                                                        <td style="text-align: center;"><button type="submit" class="boton_no_disponible">Apagar estación</button></td>
                                                 </tr>
+					</form>
+
                                         {% endfor %}
 
                                 </table>
