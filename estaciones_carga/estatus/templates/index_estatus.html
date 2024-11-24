@@ -30,15 +30,6 @@
                                 <p style="font-size:17px;text-align: center;margin: 30px;">
                                         Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
                                 </p>
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
-                    {{ message }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
                         </div>
                         <div>
                                 <table>
@@ -59,8 +50,8 @@
                                                         <td>{{ estacion.id }}</td>
                                                         <td>{{ estacion.nombre }}</td>
                                                         <td style="text-align: center;"> <a href="{{ estacion.ubicacion }}"> Link </a> </td>
-                                                        <td>
-                                                                <button class="
+                                                        <td style="text-align: center;">
+                                                                <p class="
                                                                 {% if estacion.estado == 'Disponible' %}
                                                                         boton_disponible
                                                                 {% elif estacion.estado == 'No disponible' %}
@@ -70,7 +61,7 @@
                                                                 {% else %}
                                                                         boton_mantenimiento
                                                                 {% endif %}
-                                                                "> {{ estacion.estado }} </button>
+                                                                "> {{ estacion.estado }} </p>
                                                         </td>
                                                         <td style="text-align: center;"><button type="submit" class="boton_no_disponible">Apagar estación</button></td>
                                                 </tr>
@@ -80,6 +71,11 @@
 
                                 </table>
                         </div>
+			    {% if resultado %}
+			        <script>
+					alert(" {{ resultado }} ");
+			        </script>
+			    {% endif %}
         </section>
 
       </main>
