@@ -1,19 +1,27 @@
+/* Botón de Ver más */
 .red-button {
-	background-color: #ff0000;
-	border: 2px solid #cc0000;
-	color: #fff;
-	font-weight: bold;
-	padding: 10px 20px;
-	border-radius: 10px;
-	cursor: pointer;
-	text-align: center;
-	text-decoration: none;
-	width: 80%;
+  background-color: #10b981;
+  border: 2px solid #10b981;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
-.red-button:hover {
-	background-color: #cc0000;
-	border-color: #990000;
+
+.red-button img {
+  position: absolute;
+  left: 15px; /* Ajusta según sea necesario */
 }
+
+
 .nice-form-group .nombre-parametro{
 	font-size: 20px;
 	text-align: center;
@@ -48,4 +56,13 @@
 	text-align: center; 
 	width: 50%; margin: 
 	0 auto;
+}
+
+.centered-title {
+  font-size: 40px;
+  text-align: center;
+  color: #11B981;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
