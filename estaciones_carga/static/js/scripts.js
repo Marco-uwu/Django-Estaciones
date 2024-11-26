@@ -20,7 +20,6 @@ function validarFormulario(event) {
     }
 
     if (isValid) {
-        alert('Formulario enviado correctamente!');
 	form.submit(); // Enviar el formulario si todo es válido
     }
 }
