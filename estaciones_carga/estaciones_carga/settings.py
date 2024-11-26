@@ -108,6 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = '/'  # Página principal después de iniciar sesión
+LOGOUT_REDIRECT_URL = '/login/'  # Página de login después de cerrar sesión
+LOGIN_URL = '/login/'  # Página de login por defecto
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
