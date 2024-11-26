@@ -1,24 +1,27 @@
 function validarFormulario(event) {
-    event.preventDefault(); // Evita el envío del formulario
+    event.preventDefault(); // Evitar el envío del formulario hasta que se valide
+    
+    const form = document.getElementById('form-parametros');
+    const inputs = form.querySelectorAll('.input-parametro');
+    let isValid = true;
+    
+    // Recorrer los inputs en grupos de 3 (v_min, v_ide, v_max)
+    for (let i = 0; i < inputs.length; i += 3) {
+        const v_min = parseFloat(inputs[i].value);
+        const v_ide = parseFloat(inputs[i + 1].value);
+        const v_max = parseFloat(inputs[i + 2].value);
 
-    const grupos = document.querySelectorAll('.nice-form-group');
-    let valido = true;
-    let errores = [];
-
-    grupos.forEach(grupo => {
-        const inputs = grupo.querySelectorAll('.input-parametro');
-        const minimo = parseFloat(inputs[0].value);
-        const optimo = parseFloat(inputs[1].value);
-        const maximo = parseFloat(inputs[2].value);
-
-        if (!(minimo < optimo && optimo < maximo)) {
-            valido = false;
+        if (!(v_min < v_ide && v_ide < v_max)) {
+            isValid = false;
+            alert(`Los valores en la fila ${Math.floor(i / 3) + 1} no cumplen las condiciones:
+                Mínimo < Óptimo < Máximo`);
+            break; // Salir del bucle si hay un error
         }
-    });
+    }
 
-    if (!valido) {
-        alert(`Error en los valores. El mínimo debe ser menor que el óptimo y el máximo.`);
-    } else {
-        alert('Formulario enviado correctamente.');
+    if (isValid) {
+        alert('Formulario enviado correctamente!');
+	form.submit(); // Enviar el formulario si todo es válido
     }
 }
+
