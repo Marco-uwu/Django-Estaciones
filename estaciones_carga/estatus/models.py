@@ -55,3 +55,4 @@ class TiposMedicion(models.Model):
     class Meta:
         managed = False
         db_table = 'tipos_medicion'
+

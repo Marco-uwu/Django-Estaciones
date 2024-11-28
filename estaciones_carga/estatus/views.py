@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from .models import Estaciones, ParametrosMedicion
+from django.contrib.auth.decorators import login_required
+from .models import *
 import warnings
 import paho.mqtt.client as mqtt
+from .decorators import admin_required
 
 def enviar_apagado_manual(direccion, nombre):
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -22,10 +24,11 @@ def enviar_apagado_manual(direccion, nombre):
         # Cerrar la conexión MQTT
         clienteMqtt.disconnect()
 
-        return (f"¡{nombre} apagada correctamente! {direccion}")
+        return (f"¡{nombre} apagada correctamente!")
     except Exception as e:
         return (f"Error al intentar apagar \"{nombre}\" ")
 
+@admin_required
 def estatus(request):
     template = loader.get_template('index_estatus.html')
     estaciones = Estaciones.objects.all().values()

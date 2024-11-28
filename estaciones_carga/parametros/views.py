@@ -1,6 +1,10 @@
-from django.shortcuts import render
-from .models import ParametrosMedicion
+from django.shortcuts import render, redirect
+from .models import *
 
+from django.contrib.auth.decorators import login_required
+from .decorators import admin_required
+
+@admin_required
 def parametros(request):
     # Obtener los parámetros con la regla específica
     parametros = ParametrosMedicion.objects.filter(id_regla=1)
