@@ -6,6 +6,7 @@ from .models import *
 import warnings
 import paho.mqtt.client as mqtt
 from .decorators import admin_required
+from .claseEstacion import Estacion
 
 def enviar_apagado_manual(direccion, nombre):
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -16,7 +17,8 @@ def enviar_apagado_manual(direccion, nombre):
 
         # Construir el tema y el mensaje
         tema = f"estaciones/alertas/{direccion}/shutdown"
-        mensaje = ">> Apagado manual"
+        estacion = Estacion(direccion)
+        mensaje = estacion.to_bytearray()
 
         # Publicar el mensaje
         clienteMqtt.publish(tema, mensaje)

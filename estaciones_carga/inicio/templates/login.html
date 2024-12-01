@@ -1,15 +1,74 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estaciones de Carga - Iniciar Sesión</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
+    <link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
 </head>
 <body>
-    <h2>Iniciar Sesión</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Ingresar</button>
-    </form>
+    <section style="background-color: #FFFF;">
+        <div>
+            <h1 class="centered-title">
+                <img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
+                Estaciones de Carga
+            </h1>
+        </div>
+    </section>
+    <div class="demo-page">
+        <div class="demo-page-navigation">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="">
+                            <img src="{% static 'icons/user-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+                            Iniciar sesión
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <main class="demo-page-content">
+            <section>
+                <div class="nice-form-group">
+                    <h1 style="font-size:35px;text-align: center;">
+                        <img src="{% static 'icons/user-svgrepo-com.svg' %}" width="48" height="48" style="margin-right: 5px;vertical-align: middle;">
+                        Iniciar sesión
+                    </h1>
+                    <p style="font-size:17px;text-align: center;margin: 30px;">
+                        Inicia sesión con tu cuenta o regístrate
+                    </p>
+                </div>
+                
+                <div style="display: flex;justify-content: center;align-items: center;">
+                    <form id="form-login" method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="nice-form-group"> 
+                            <label>Usuario</label>
+                            <input name="username" id="correo" type="text" placeholder="Usuario" value="" class="icon-left" required/>
+                        </div>
+                        <div class="nice-form-group"> 
+                            <label>Contraseña</label>
+                            <input name="password" id="pass" type="password" placeholder="Contraseña" class="icon-left" required />
+                        </div>
+                        <div class="nice-form-group">
+                            <input type="submit" value="Iniciar sesión" class="red-button" style="width: 100%;">
+                        </div>
+                    </form>
+                </div>
+                
+                <details>
+                    <summary>
+                        <p>¿Aún no tienes cuenta? <a>Regístrate</a>.</p>
+                    </summary>
+                </details>
+            </section>
+        </main>
+    </div>
 </body>
 </html>
 
