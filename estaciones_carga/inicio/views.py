@@ -7,7 +7,7 @@ from .decorators import admin_required
 
 @admin_required
 def inicio(request):
-    estaciones = Estaciones.objects.all().values()
+    estaciones = Estaciones.objects.all().values()[:5]
     parametros = ParametrosMedicion.objects.filter(id_regla=1)
     template = loader.get_template('inicio.html')
     context = {

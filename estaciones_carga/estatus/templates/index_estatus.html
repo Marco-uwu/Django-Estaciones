@@ -12,6 +12,8 @@
 		<link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
 		<link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
+		
+		<script src="{% static 'js/scripts.js' %}"></script>
 	</head>
 	
 	<!-- BODY -->
@@ -29,8 +31,10 @@
 		
 		<!-- Contenido -->
 		<div class="demo-page" >
-		
+			
+			<!-- Bloque de navegación -->
 			<div class="demo-page-navigation" >
+			
 				<nav>
 					<ul>
 						<li>
@@ -41,40 +45,42 @@
 						</li>
 					</ul>
 				</nav>
+				
 				<br>
-                                <nav>
-                                        <ul>
-                                                <li>
-                                                        <a href="">
-                                                                <img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-                                                                Estatus
-                                                        </a>
-                                                </li>
-                                        </ul>
+				
+                <nav>
+                    <ul>
+                        <li>
+                            <a href="">
+                                    <img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+                                    Estado
+                            </a>
+                        </li>
+                    </ul>
+					
 					<ul>
-                                                <li>
-                                                        <a href="">
-                                                                <img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-                                                                Mediciones
-                                                        </a>
-                                                </li>
-                                        </ul>
-                                </nav>
+                        <li>
+                            <a href="">
+                                <img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+                                Mediciones
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+				
 			</div>
 			
+			<!-- Tablas de información -->
 			<main class="demo-page-content" style="width: 100%">
+			
+				<!-- Sección "Estado" -->
 				<section>
 				
 					<div>
-						<h1 style="color:#4b5563;font-size:35px;text-align: center;">
-							<img 
-								src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" 
-								style="margin-right: 16px;vertical-align: middle;"
-								width="48" height="48" 
-							>
+						<h1 style="color:black;font-size:35px;text-align: center;">
 							Estado de estaciones
 						</h1>
-						<p style="font-size:17px;text-align: center;margin: 30px;">
+						<p style="font-size:17px;text-align: left;margin: 30px;">
 							Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
 						</p>
 					</div>
@@ -162,7 +168,64 @@
 						</script>
 					{% endif %}
 					
+					<details>
+						<summary>
+							<p><br></p>
+						</summary>
+					</details>
+					
 				</section>
+				
+				<!-- Sección "Mediciones" -->
+				<section>
+				
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Mediciones
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Gestiona tus estaciones de forma sencilla: Revisa los registros de mediciones más recientes en todas las estaciones.
+						</p>
+					</div>
+
+					<div class="nice-form-group" >
+					
+						<select id="filtro-estacion" name="estacion_medicion" onchange="filtrarEstacion()">
+							<option value="" {% if not request.GET.estacion_medicion %}selected{% endif %}>Selecciona una estación</option>
+							{% for estacion in estaciones %}
+								<option value="{{estacion.id}}" {% if request.GET.estacion_medicion == estacion.id|stringformat:"s" %}selected{% endif %}>{{estacion.nombre}}</option>
+							{% endfor %}
+						</select>
+						
+						<table>
+							<tr>
+								<th>ID</th>
+								<th>Fecha</th>
+								<th>Valor</th>
+								<th>Unidad</th>
+								<th>Tipo</th>
+							</tr>
+						{% for medicion in mediciones %}
+							<tr>
+							<td>{{ medicion.id }}</td>
+							<td>{{ medicion.fecha }}</td>
+							<td>{{ medicion.valor }}</td>
+							<td>{% if medicion.id_tipo_medicion.tipo_medicion == 'I' %} A {% elif medicion.id_tipo_medicion.tipo_medicion == 'T'%} °C {% else %} {{medicion.id_tipo_medicion.tipo_medicion}}{% endif %}</td>
+							<td>{{ medicion.id_tipo_medicion.descripcion }}</td>
+							</tr>
+						{% endfor %}
+						</table>
+						
+					</div>
+					
+					<details>
+						<summary>
+							<p><br></p>
+						</summary>
+					</details>
+					
+				</section>
+				
 			</main>
 			
 		</div>
@@ -170,5 +233,6 @@
 	</body>
 	
 </html>
+
 
 

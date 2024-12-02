@@ -35,6 +35,14 @@ def estatus(request):
     template = loader.get_template('index_estatus.html')
     estaciones = Estaciones.objects.all().values()
     resultado = ""
+
+    estacion_mediciones = request.GET.get('estacion_medicion', '')
+
+    if estacion_mediciones:
+        mediciones = Mediciones.objects.filter(id_estacion=estacion_mediciones)[:100]
+    else:
+        mediciones = Mediciones.objects.all()[:100]
+
     if request.method == "POST":
         nombre = request.POST.get("nombre_estacion")
         direccion =  request.POST.get("dir_estacion")
@@ -45,5 +53,6 @@ def estatus(request):
     context = {
         'estaciones' : estaciones,
         'resultado' : resultado,
+        'mediciones' : mediciones,
     }
     return HttpResponse(template.render(context, request))

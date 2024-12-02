@@ -24,3 +24,10 @@ function validarFormulario(event) {
     }
 }
 
+function filtrarEstacion() {
+    const estacionMedicion = document.getElementById('filtro-estacion').value;
+    const url = new URL(window.location.href);
+    url.searchParams.set('estacion_medicion', estacionMedicion);
+    window.location.href = url.toString();
+}
+
