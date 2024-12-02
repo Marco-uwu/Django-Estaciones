@@ -1,90 +1,131 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-        <head>
-                <meta charset="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-                <link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
-                <link rel="stylesheet" href="{% static 'css/index.css' %}" />
-                <link rel="stylesheet" href="{% static 'css/estilos_parametros.css' %}" />
+		<link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
+		<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/estilos_parametros.css' %}" />
 
-                <script src="{% static 'js/scripts.js' %}"></script>
+		<script src="{% static 'js/scripts.js' %}"></script>
 
-                <title>Estaciones de Carga</title>
-        </head>
-        <body>
-                <main class="demo-page-content">
-                        <section style="background-color: #FFFF;">
-                                <div>
-                                                <h1 class="centered-title">
-                                                <img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
-                                                Estaciones de Carga
-                                                </h1>
-                                </div>
-                        </section>
+		<title>Estaciones de Carga</title>
+	</head>
+	<body>
+		<main class="demo-page-content">
+		
+			<!-- Encabezado -->
+			<section style="background-color: #FFFF;">
+				<div>
+					<h1 class="centered-title">
+						<img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
+						Estaciones de Carga
+					</h1>
+				</div>
+			</section>
+			<!-- Contenido -->
+			<div class="demo-page" >
+				
+				<!-- Bloque de navegación -->
+				<div class="demo-page-navigation" >
+				
+					<nav>
+						<ul>
+							<li>
+								<a href="{% url 'inicio' %}">
+									<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+									Inicio
+								</a>
+							</li>
+						</ul>
+					</nav>
+					
+					<br>
+					
+					<nav>
+						<ul>
+							<li>
+								<a href="">
+									<img src="{% static 'icons/square-sliders-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+									Parámetros
+								</a>
+							</li>
+						</ul>
+						
+						<ul>
+							<li>
+								<a href="">
+									<img src="{% static 'icons/square-list-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+									Reglas
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				
+				<!-- Tablas de información -->
+				<main class="demo-page-content" style="width: 100%">
+					<!-- Sección "Parámetros" -->
+					<section>
+						<div>
+							<h1 style="color:black;font-size:35px;text-align: center;">
+								Parámetros de operación
+							</h1>
+							<p style="font-size:17px;text-align: left;margin: 30px;">
+								Establece los límites máximos y mínimos para cada estación. Si los valores de medición superan estos límites, se activarán las alertas.
+							</p>
+						</div>
 
+						<div class="nice-form-group">
+							
+							<form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
+								{% csrf_token %}
+								
+								{% for parametro in parametros %}
+									<div class="nice-form-group" style="margin: 15px;">
+										<h1>
+											{% cycle 'Voltaje 1' 'Voltaje 2' 'Voltaje 3' 'Voltaje 4' 'Voltaje 5' 'Intensidad 1'  'Intensidad 2' 'Temperatura'%}
+										</h1>
+										<small>
+											{% cycle 'Voltaje de entrada al inversor' 'Voltaje del aerogenerador' 'Voltaje de carga de batería' 'Voltaje de CFE' 'Voltaje de entrada al inversor' 'Corriente del módulo regulador' 'Corriente del módulo inversor' 'Temperatura del banco de baterías'%}
+										</small>
+									</div>
+									
+									<div class="nice-form-group">
+										<span style="margin: 30px;">
+											<div style="display: inline-block;width: 33%"><strong style="color: blue">Mínimo</strong></div>
+											<div style="display: inline-block;width: 33%"><strong style="color: green">Óptimo</strong></div>
+											<div style="display: inline-block;width: 33%"><strong style="color: red">Máximo</strong></div>
+										</span>
+									</div>
 
-                        <section style="text-align: center;width: 90%; margin: 0 auto;">
+									<div class="nice-form-group" style="margin: 0px;">
+										<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_min }}" required>
+										<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_ide }}" required>
+										<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_max }}" required>
+									</div>
+								{% endfor %}
+							</form>
+						</div>
+						
+						<details>
+							<summary style="display: flex; justify-content: flex-end;">
+								<input type="submit" value="Guardar cambios" form="form-parametros" class="red-button">
+							</summary>
+						</details>
+					</section>
+				</main>
+			</div>
 
-                                <div>
-                                        <a style="width:10%" href="{% url 'inicio' %}" class="red-button">
-                                                <span class="text">&#60;</span>
-                                        </a>
-
-                                        <h1 style="font-size:35px;">
-                                                        <img src="{% static 'icons/message-circle-exclamation-svgrepo-com.svg' %}" alt="Icono de parametros" width="48" height="48" style="margin-right: 16px;vertical-align: middle;">
-                                                        Parámetros de operación
-                                        </h1>
-
-                                        <p style="font-size:17px;text-align: center;margin: 30px;">
-                                                        Establece los límites máximos y mínimos para cada estación. Si los valores de medición superan estos límites, se activarán las alertas.
-                                        </p>
-                                </div>
-
-                                <div>
-                                        <form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
-						{% csrf_token %}
-                                                <div class="nice-form-group">
-
-                                                        {% for parametro in parametros %}
-                                                                <br>
-                                                                <label class ="nombre-parametro">{% cycle 'Voltaje 1' 'Voltaje 2' 'Voltaje 3' 'Voltaje 4' 'Voltaje 5' 'Intensidad 1'  'Intensidad 2' 'Temperatura'%}</label>
-                                                                <small>{% cycle 'Voltaje de entrada al inversor' 'Voltaje del aerogenerador' 'Voltaje de carga de batería' 'Voltaje de CFE' 'Voltaje de entrada al inversor' 'Corriente del módulo regulador' 'Corriente del módulo inversor' 'Temperatura del banco de baterías'%}</small>
-
-                                                                <div class="nice-form-group">
-                                                                        <div class = "tituloParametro">
-                                                                                <div style="flex: 1;"><strong style="color: blue">Mínimo</strong></div>
-                                                                                <div style="flex: 1;"><strong style="color: green">Óptimo</strong></div>
-                                                                                <div style="flex: 1;"><strong style="color: red">Máximo</strong></div>
-                                                                        </div>
-                                                                </div>
-
-                                                                <div class="nice-form-group">
-                                                                        <input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_min }}" required>
-                                                                        <input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_ide }}" required>
-                                                                        <input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_max }}" required>
-                                                                </div>
-                                                        {% endfor %}
-
-                                                        <details>
-                                                                <summary>
-                                                                        <td style="text-align: center;">
-                                                                                <input type="submit" value="Guardar cambios" form="form-parametros" class="boton-parametro">
-                                                                        </td>
-                                                                </summary>
-                                                        </details>
-
-                                                </div>
-                                        </form>
-                                </div>
-
-                        </section>
-                </main>
+		
 		{% if mensaje %}
-                    <script>
-                        alert(" {{ mensaje }} ");
-                    </script>
-                {% endif %}
-        </body>
+			<script>
+				alert(" {{ mensaje }} ");
+			</script>
+		{% endif %}
+		
+	</body>
 </html>
+
