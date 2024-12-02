@@ -85,3 +85,10 @@ function actualizarTabla() {
   const celdaResultado = document.getElementById('encabezado_mediciones');
   celdaResultado.textContent = valorSeleccionado;
 }
+
+function filtrarRegla() {
+    const regla = document.getElementById('filtro_regla').value;
+    const url = new URL(window.location.href);
+    url.searchParams.set('regla', regla);
+    window.location.href = url.toString();
+}

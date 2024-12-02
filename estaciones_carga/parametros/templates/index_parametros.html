@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,119 +14,201 @@
 
 		<title>Estaciones de Carga</title>
 	</head>
+
 	<body>
-		<main class="demo-page-content">
-		
-			<!-- Encabezado -->
-			<section style="background-color: #FFFF;">
-				<div>
-					<h1 class="centered-title">
-						<img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
-						Estaciones de Carga
-					</h1>
-				</div>
-			</section>
-			<!-- Contenido -->
-			<div class="demo-page" >
-				
-				<!-- Bloque de navegación -->
-				<div class="demo-page-navigation" >
-				
-					<nav>
-						<ul>
-							<li>
-								<a href="{% url 'inicio' %}">
-									<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-									Inicio
-								</a>
-							</li>
-						</ul>
-					</nav>
-					
-					<br>
-					
-					<nav>
-						<ul>
-							<li>
-								<a href="">
-									<img src="{% static 'icons/square-sliders-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-									Parámetros
-								</a>
-							</li>
-						</ul>
-						
-						<ul>
-							<li>
-								<a href="">
-									<img src="{% static 'icons/square-list-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-									Reglas
-								</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
-				
-				<!-- Tablas de información -->
-				<main class="demo-page-content" style="width: 100%">
-					<!-- Sección "Parámetros" -->
-					<section>
-						<div>
-							<h1 style="color:black;font-size:35px;text-align: center;">
-								Parámetros de operación
-							</h1>
-							<p style="font-size:17px;text-align: left;margin: 30px;">
-								Establece los límites máximos y mínimos para cada estación. Si los valores de medición superan estos límites, se activarán las alertas.
-							</p>
-						</div>
 
-						<div class="nice-form-group">
-							
-							<form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
-								{% csrf_token %}
-								
-								{% for parametro in parametros %}
-									<div class="nice-form-group" style="margin: 15px;">
-										<h1>
-											{% cycle 'Voltaje 1' 'Voltaje 2' 'Voltaje 3' 'Voltaje 4' 'Voltaje 5' 'Intensidad 1'  'Intensidad 2' 'Temperatura'%}
-										</h1>
-										<small>
-											{% cycle 'Voltaje de entrada al inversor' 'Voltaje del aerogenerador' 'Voltaje de carga de batería' 'Voltaje de CFE' 'Voltaje de entrada al inversor' 'Corriente del módulo regulador' 'Corriente del módulo inversor' 'Temperatura del banco de baterías'%}
-										</small>
-									</div>
-									
-									<div class="nice-form-group">
-										<span style="margin: 30px;">
-											<div style="display: inline-block;width: 33%"><strong style="color: blue">Mínimo</strong></div>
-											<div style="display: inline-block;width: 33%"><strong style="color: green">Óptimo</strong></div>
-											<div style="display: inline-block;width: 33%"><strong style="color: red">Máximo</strong></div>
-										</span>
-									</div>
 
-									<div class="nice-form-group" style="margin: 0px;">
-										<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_min }}" required>
-										<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_ide }}" required>
-										<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_max }}" required>
-									</div>
-								{% endfor %}
-							</form>
-						</div>
-						
-						<details>
-							<summary style="display: flex; justify-content: flex-end;">
-								<input type="submit" value="Guardar cambios" form="form-parametros" class="red-button">
-							</summary>
-						</details>
-					</section>
-				</main>
+		<!-- Encabezado -->
+		<section style="background-color: #FFFF;">
+			<div>
+				<h1 class="centered-title">
+					<img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
+					Estaciones de Carga
+				</h1>
+			</div>
+		</section>
+
+
+		<!-- Contenedor de la página -->
+		<div class="demo-page" >
+
+
+			<!-- Bloque de navegación -->
+			<div class="demo-page-navigation" >
+
+				<nav>
+					<ul>
+						<li>
+							<a href="{% url 'inicio' %}">
+								<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Inicio
+							</a>
+						</li>
+					</ul>
+				</nav>
+
+				<br>
+
+				<nav>
+					<ul>
+						<li>
+							<a href="">
+								<img src="{% static 'icons/square-sliders-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Modificar
+							</a>
+						</li>
+					</ul>
+
+					<ul>
+						<li>
+							<a href="">
+								<img src="{% static 'icons/square-list-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Reglas
+							</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 
-		
+
+			<!-- Tablas de información -->
+			<main class="demo-page-content" style="width: 100%">
+
+				<!-- Sección "Parámetros" -->
+				<section>
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Parámetros de operación
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Modifica los límites máximos y mínimos para cada estación. Si los valores de medición superan estos límites, se activarán las alertas.
+						</p>
+					</div>
+
+					<div class="nice-form-group">
+
+						<form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
+							{% csrf_token %}
+
+							{% for parametro in parametros %}
+								<div class="nice-form-group" style="margin: 15px;">
+									<h1>
+										{% cycle 'Voltaje 1' 'Voltaje 2' 'Voltaje 3' 'Voltaje 4' 'Voltaje 5' 'Intensidad 1'  'Intensidad 2' 'Temperatura'%}
+									</h1>
+									<small>
+										{% cycle 'Voltaje de entrada al inversor' 'Voltaje del aerogenerador' 'Voltaje de carga de batería' 'Voltaje de CFE' 'Voltaje de entrada al inversor' 'Corriente del módulo regulador' 'Corriente del módulo inversor' 'Temperatura del banco de baterías'%}
+									</small>
+								</div>
+
+								<div class="nice-form-group">
+									<span style="margin: 30px;">
+										<div style="display: inline-block;width: 33%"><strong style="color: blue">Mínimo</strong></div>
+										<div style="display: inline-block;width: 33%"><strong style="color: green">Óptimo</strong></div>
+										<div style="display: inline-block;width: 33%"><strong style="color: red">Máximo</strong></div>
+									</span>
+								</div>
+
+								<div class="nice-form-group" style="margin: 0px;">
+									<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_min }}" required>
+									<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_ide }}" required>
+									<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_max }}" required>
+								</div>
+							{% endfor %}
+						</form>
+					</div>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							<input type="submit" value="Guardar cambios" form="form-parametros" class="red-button">
+						</summary>
+					</details>
+				</section>
+
+				<!-- Sección "Reglas" -->
+				<section>
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Reglas
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Consulta los parámetros establecidos en cada regla.
+						</p>
+					</div>
+
+					<div class="nice-form-group" style="margin: 30px;">
+						<select id="filtro_regla" name="regla" onchange="filtrarRegla()">
+							<option value=""{% if not request.GET.regla %}selected{% endif %}>Selecciona una regla</option>
+							{% for regla in reglas%}
+								<option value="{{regla.id}}" {% if request.GET.regla == regla.id|stringformat:"s" %}selected{% endif %}>{{regla.nombre}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					
+					<div>
+						<table>
+							<tr>
+								<th>
+									Tipo de medición
+								</th>
+								<th>
+									Valor mínimo
+								</th>
+								<th>
+									Valor óptimo
+								</th>
+								<th>
+									Valor máximo
+								</th>
+							</tr>
+							{% if not request.GET.regla %}
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							{% else %}
+								{% if valores %}
+									{% for valor in valores%}
+										<tr>
+											<td>{{valor.id_tipo_medicion.descripcion}}</td>
+											<td>{{valor.valor_min}}</td>
+											<td>{{valor.valor_ide}}</td>
+											<td>{{valor.valor_max}}</td>
+										</tr>
+									{% endfor %}
+								{% endif %}
+							{% endif %}
+							
+							
+							
+						</table>
+					</div>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							<button class="red-button">
+								<img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
+								<span class="text">Editar</span>
+							</button>
+						</summary>
+					</details>
+
+				</section>
+
+			</main>
+
+
+		</div>
+
+
 		{% if mensaje %}
 			<script>
 				alert(" {{ mensaje }} ");
 			</script>
 		{% endif %}
-		
+
 	</body>
 </html>
 

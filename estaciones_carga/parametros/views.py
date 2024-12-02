@@ -8,7 +8,15 @@ from .decorators import admin_required
 def parametros(request):
     # Obtener los parámetros con la regla específica
     parametros = ParametrosMedicion.objects.filter(id_regla=1)
+    valores = ParametrosMedicion.objects.all().values()
+    reglas = ReglasMedicion.objects.all().values()
+    
     mensaje = ""
+
+    tipo_regla = request.GET.get('regla', '')
+
+    if tipo_regla:
+        valores = ParametrosMedicion.objects.filter(id_regla=tipo_regla)
 
     if request.method == "POST":
         tipos = ["min", "ide", "max"]
@@ -41,7 +49,9 @@ def parametros(request):
     # Contexto para el template
     context = {
         'parametros': parametros,
+        'reglas': reglas,
         'mensaje': mensaje,
+        'valores': valores,
     }
 
     return render(request, 'index_parametros.html', context)
