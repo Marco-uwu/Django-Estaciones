@@ -1,94 +1,141 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Estaciones de Carga</title>
-    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
-        <link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
-  </head>
-  <body>
-	          <section style="background-color: #FFFF;">
-          <div>
-                <h1 class="centered-title">
-                  <img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
-                  Estaciones de Carga
-                </h1>
-          </div>
-        </section>
-    <div style="width: 90%; margin: 0 auto;">
+	<!-- HEAD -->
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		
+		<title>Estaciones de Carga</title>
+		
+		<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
+		<link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
+	</head>
+	
+	<!-- BODY -->
+	<body>
+		
+		<!-- Encabezado -->
+		<section style="background-color: #FFFF;">
+			<div>
+				<h1 class="centered-title">
+					<img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
+					Estaciones de Carga
+				</h1>
+			</div>
+		</section>
+		
+		<!-- Contenido -->
+		<div style="width: 90%; margin: 0 auto;">
+		
+			<section>
+			
+				<a style="width:10%" href="{% url 'inicio' %}" class="red-button">
+					<span class="text">&#60;</span>
+				</a>
 
-                <section>
-			<a style="width:10%" href="{% url 'inicio' %}" class="red-button">
-			        <span class="text">&#60;</span>
-			</a>
+				<div>
+					<h1 style="color:#4b5563;font-size:35px;text-align: center;">
+						<img 
+							src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" 
+							style="margin-right: 16px;vertical-align: middle;"
+							width="48" height="48" 
+						>
+						Estado de estaciones
+					</h1>
+					<p style="font-size:17px;text-align: center;margin: 30px;">
+						Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
+					</p>
+				</div>
 
-
-
-
-
-
-
-                        <div>
-                                <h1 style="color:#4b5563;font-size:35px;text-align: center;">
-                                        <img src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" alt="Icono de estaciones" width="48" height="48" style="margin-right: 16px;vertical-align: middle;">
-                                        Estado de estaciones
-                                </h1>
-                                <p style="font-size:17px;text-align: center;margin: 30px;">
-                                        Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
-                                </p>
-                        </div>
-                        <div>
-                                <table>
-                                        <tr>
-                                                <th>ID</th>
-                                                <th>Nombre</th>
-                                                <th>Ubicación</th>
-                                                <th>Estado</th>
-                                                <th>Acción</th>
-                                        </tr>
-
-                                        {% for estacion in estaciones %}
-					<form method="POST" action="{% url 'estatus' %}">
-						{% csrf_token %}
-						<input type="hidden" name="dir_estacion" value="{{ estacion.dir_mac }}">
-						<input type="hidden" name="nombre_estacion" value="{{ estacion.nombre }}">
-                                                <tr>
-                                                        <td>{{ estacion.id }}</td>
-                                                        <td>{{ estacion.nombre }}</td>
-                                                        <td style="text-align: center;"> <a href="{{ estacion.ubicacion }}"> Link </a> </td>
-                                                        <td style="text-align: center;">
-                                                                <p class="
-                                                                {% if estacion.estado == 'Disponible' %}
-                                                                        boton_disponible
-                                                                {% elif estacion.estado == 'No disponible' %}
-                                                                        boton_no_disponible
-                                                                {% elif estacion.estado == 'Fuera de servicio' %}
-                                                                        boton_fuera_servicio
-                                                                {% else %}
-                                                                        boton_mantenimiento
-                                                                {% endif %}
-                                                                "> {{ estacion.estado }} </p>
-                                                        </td>
-                                                        <td style="text-align: center;"><button type="submit" class="boton_no_disponible">Apagar estación</button></td>
-                                                </tr>
-					</form>
-
-                                        {% endfor %}
-
-                                </table>
-                        </div>
-			    {% if resultado %}
-			        <script>
-					alert(" {{ resultado }} ");
-			        </script>
-			    {% endif %}
-        </section>
-
-      </main>
-    </div>
-  </body>
+				<div>
+					<table>
+						<tr>
+								<th>ID</th>
+								<th>Nombre</th>
+								<th>Ubicación</th>
+								<th>Estado</th>
+								<th>Acción</th>
+						</tr>
+		
+						{% for estacion in estaciones %}
+							<form id="form-estacion-{{forloop.counter}}" method="POST" action="{% url 'estatus' %}">
+							
+								{% csrf_token %}
+								
+								<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+								<input form="form-estacion-{{forloop.counter}}" type="hidden" 
+									id="dir_estacion" 
+									name="dir_estacion" 
+									value="{{ estacion.dir_mac }}"
+								>
+								<input form="form-estacion-{{forloop.counter}}" type="hidden" 
+									id="nombre_estacion" 
+									name="nombre_estacion" 
+									value="{{ estacion.nombre }}"
+								>
+								
+								<!-- Fila de datos a mostrar por registro -->
+								<tr>
+								
+									<td>{{ estacion.id }}</td>
+									
+									<td>{{ estacion.nombre }}</td>
+									
+									<td style="text-align: center;"> 
+										<a href="{{ estacion.ubicacion }}"> 
+											Link 
+										</a> 
+									</td>
+									
+									<td style="text-align: center;">
+										<p
+											class="
+												{% if estacion.estado == 'Disponible' %}
+													boton_disponible
+												{% elif estacion.estado == 'No disponible' %}
+													boton_no_disponible
+												{% elif estacion.estado == 'Fuera de servicio' %}
+													boton_fuera_servicio
+												{% else %}
+													boton_mantenimiento
+												{% endif %}
+											"
+										>
+											{{ estacion.estado }} 
+										</p>
+									</td>
+									
+									<td style="text-align: center;">
+										<input 
+											form="form-estacion-{{forloop.counter}}" 
+											type="submit" 
+											value="Apagar estación" 
+											class="boton_no_disponible">
+										</input>
+									</td>
+								
+								</tr>
+							</form>
+		
+						{% endfor %}
+						
+					</table>
+				</div>
+				
+				{% if resultado %}
+					<script>
+						alert(" {{ resultado }} ");
+					</script>
+				{% endif %}
+				
+			</section>
+			
+		</div>
+		
+	</body>
+	
 </html>
+
