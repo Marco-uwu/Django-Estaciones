@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from .models import *
 import warnings
 import paho.mqtt.client as mqtt
@@ -43,6 +44,11 @@ def estatus(request):
     else:
         mediciones = Mediciones.objects.all()[:100]
 
+    # Configurar el paginador para 10 registros por página
+    paginator = Paginator(mediciones, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     if request.method == "POST":
         nombre = request.POST.get("nombre_estacion")
         direccion =  request.POST.get("dir_estacion")
@@ -53,6 +59,6 @@ def estatus(request):
     context = {
         'estaciones' : estaciones,
         'resultado' : resultado,
-        'mediciones' : mediciones,
+        'page_obj' : page_obj,
     }
     return HttpResponse(template.render(context, request))

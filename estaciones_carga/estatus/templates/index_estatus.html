@@ -51,7 +51,7 @@
                 <nav>
                     <ul>
                         <li>
-                            <a href="">
+                            <a href="#" data-section="seccion_estado">
                                     <img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
                                     Estado
                             </a>
@@ -60,7 +60,7 @@
 					
 					<ul>
                         <li>
-                            <a href="">
+                            <a href="#" data-section="seccion_mediciones">
                                 <img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
                                 Mediciones
                             </a>
@@ -74,7 +74,7 @@
 			<main class="demo-page-content" style="width: 100%">
 			
 				<!-- Sección "Estado" -->
-				<section>
+				<section id='seccion_estado'>
 				
 					<div>
 						<h1 style="color:black;font-size:35px;text-align: center;">
@@ -177,7 +177,7 @@
 				</section>
 				
 				<!-- Sección "Mediciones" -->
-				<section>
+				<section id="seccion_mediciones" style="display:none">
 				
 					<div>
 						<h1 style="color:black;font-size:35px;text-align: center;">
@@ -199,13 +199,25 @@
 						
 						<table>
 							<tr>
+								<th colspan="5" id="encabezado_mediciones"> {% if not page_obj %}Selecciona una estación{%else%} {{page_obj.0.id_estacion}} {% endif %} </th>
+							</tr>
+							<tr>
 								<th>ID</th>
 								<th>Fecha</th>
 								<th>Valor</th>
 								<th>Unidad</th>
 								<th>Tipo</th>
 							</tr>
-						{% for medicion in mediciones %}
+						{% if not page_obj %}
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						{% endif %}
+						{% for medicion in page_obj %}
 							<tr>
 							<td>{{ medicion.id }}</td>
 							<td>{{ medicion.fecha }}</td>
@@ -215,12 +227,33 @@
 							</tr>
 						{% endfor %}
 						</table>
+
+						<br>
+
+						<span class="current" >
+                <strong>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</strong>
+        </span>
 						
 					</div>
 					
 					<details>
-						<summary>
-							<p><br></p>
+						<summary style="text-align: right;">
+							
+    <span>
+	
+        {% if page_obj.has_previous %}
+	<div style="display: inline-block;">
+            <a style="display: inline-block; min-width: fit-content;" class="red-button" href="?page=1">&laquo; Primera</a>
+            <a style="display: inline-block; min-width: fit-content;" class="red-button" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+	</div>
+	{% endif %}
+        {% if page_obj.has_next %}
+	<div style="display: inline-block;">
+            <a style="display: inline-block; min-width: fit-content;" class="red-button" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+            <a style="display: inline-block; min-width: fit-content;" class="red-button" href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+        </div>
+        {% endif %}
+    </span>
 						</summary>
 					</details>
 					

@@ -31,3 +31,57 @@ function filtrarEstacion() {
     window.location.href = url.toString();
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Selecciona todos los enlaces de navegación y las secciones
+    const navLinks = document.querySelectorAll('[data-section]');
+    const sections = document.querySelectorAll('section');
+
+    // Función para ocultar todas las secciones
+    const hideAllSections = () => {
+        sections.forEach(section => {
+            section.style.display = "none";
+        });
+    };
+
+    // Función para mostrar una sección específica
+    const showSection = (sectionId) => {
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            hideAllSections();
+            targetSection.style.display = "block";
+        }
+    };
+
+    // Restaurar la última sección seleccionada desde localStorage
+    const lastSection = localStorage.getItem('lastSelectedSection');
+    if (lastSection) {
+        showSection(lastSection);
+    } else {
+        // Si no hay una selección previa, mostrar la primera sección por defecto
+        showSection('seccion_estado');
+    }
+
+    // Agregar evento de clic a cada enlace de navegación
+    navLinks.forEach(link => {
+        link.addEventListener('click', function (event) {
+            event.preventDefault(); // Previene el comportamiento predeterminado del enlace
+
+            // Obtener la sección asociada al enlace
+            const targetSectionId = this.getAttribute('data-section');
+
+            // Mostrar la sección seleccionada
+            showSection(targetSectionId);
+
+            // Guardar la sección seleccionada en localStorage
+            localStorage.setItem('lastSelectedSection', targetSectionId);
+        });
+    });
+});
+
+function actualizarTabla() {
+  const selectElement = document.getElementById('filtro-estacion');
+  const valorSeleccionado = selectElement.value;
+
+  const celdaResultado = document.getElementById('encabezado_mediciones');
+  celdaResultado.textContent = valorSeleccionado;
+}
