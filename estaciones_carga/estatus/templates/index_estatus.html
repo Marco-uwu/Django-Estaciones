@@ -28,114 +28,147 @@
 		</section>
 		
 		<!-- Contenido -->
-		<div style="width: 90%; margin: 0 auto;">
+		<div class="demo-page" >
 		
-			<section>
+			<div class="demo-page-navigation" >
+				<nav>
+					<ul>
+						<li>
+							<a href="{% url 'inicio' %}">
+								<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Inicio
+							</a>
+						</li>
+					</ul>
+				</nav>
+				<br>
+                                <nav>
+                                        <ul>
+                                                <li>
+                                                        <a href="">
+                                                                <img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+                                                                Estatus
+                                                        </a>
+                                                </li>
+                                        </ul>
+					<ul>
+                                                <li>
+                                                        <a href="">
+                                                                <img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+                                                                Mediciones
+                                                        </a>
+                                                </li>
+                                        </ul>
+                                </nav>
+			</div>
 			
-				<a style="width:10%" href="{% url 'inicio' %}" class="red-button">
-					<span class="text">&#60;</span>
-				</a>
+			<main class="demo-page-content" style="width: 100%">
+				<section>
+				
+					<div>
+						<h1 style="color:#4b5563;font-size:35px;text-align: center;">
+							<img 
+								src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" 
+								style="margin-right: 16px;vertical-align: middle;"
+								width="48" height="48" 
+							>
+							Estado de estaciones
+						</h1>
+						<p style="font-size:17px;text-align: center;margin: 30px;">
+							Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
+						</p>
+					</div>
 
-				<div>
-					<h1 style="color:#4b5563;font-size:35px;text-align: center;">
-						<img 
-							src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" 
-							style="margin-right: 16px;vertical-align: middle;"
-							width="48" height="48" 
-						>
-						Estado de estaciones
-					</h1>
-					<p style="font-size:17px;text-align: center;margin: 30px;">
-						Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
-					</p>
-				</div>
-
-				<div>
-					<table>
-						<tr>
+					<div class="nice-form-group" >
+						<table>
+							<tr>
 								<th>ID</th>
 								<th>Nombre</th>
 								<th>Ubicación</th>
 								<th>Estado</th>
 								<th>Acción</th>
-						</tr>
-		
-						{% for estacion in estaciones %}
-							<form id="form-estacion-{{forloop.counter}}" method="POST" action="{% url 'estatus' %}">
+							</tr>
+			
+							{% for estacion in estaciones %}
+								<form id="form-estacion-{{forloop.counter}}" method="POST" action="{% url 'estatus' %}">
+								
+									{% csrf_token %}
+									
+									<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+									<input form="form-estacion-{{forloop.counter}}" type="hidden" 
+										id="dir_estacion" 
+										name="dir_estacion" 
+										value="{{ estacion.dir_mac }}"
+									>
+									<input form="form-estacion-{{forloop.counter}}" type="hidden" 
+										id="nombre_estacion" 
+										name="nombre_estacion" 
+										value="{{ estacion.nombre }}"
+									>
+									
+									<!-- Fila de datos a mostrar por registro -->
+									<tr>
+									
+										<td>{{ estacion.id }}</td>
+										
+										<td>{{ estacion.nombre }}</td>
+										
+										<td style="text-align: center;"> 
+											<a href="{{ estacion.ubicacion }}"> 
+												Link 
+											</a> 
+										</td>
+										
+										<td style="text-align: center;">
+											<p
+												class="
+													{% if estacion.estado == 'Disponible' %}
+														boton_disponible
+													{% elif estacion.estado == 'No disponible' %}
+														boton_no_disponible
+													{% elif estacion.estado == 'Fuera de servicio' %}
+														boton_fuera_servicio
+													{% else %}
+														boton_mantenimiento
+													{% endif %}
+												"
+												style="width:100%"
+											>
+												{{ estacion.estado }} 
+											</p>
+										</td>
+										
+										<td style="text-align: center;">
+											<input 
+												form="form-estacion-{{forloop.counter}}" 
+												type="submit" 
+												value="Apagar estación" 
+												class="boton_no_disponible"
+												style="width:100%">
+											</input>
+										</td>
+									
+									</tr>
+								</form>
+			
+							{% endfor %}
 							
-								{% csrf_token %}
-								
-								<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
-								<input form="form-estacion-{{forloop.counter}}" type="hidden" 
-									id="dir_estacion" 
-									name="dir_estacion" 
-									value="{{ estacion.dir_mac }}"
-								>
-								<input form="form-estacion-{{forloop.counter}}" type="hidden" 
-									id="nombre_estacion" 
-									name="nombre_estacion" 
-									value="{{ estacion.nombre }}"
-								>
-								
-								<!-- Fila de datos a mostrar por registro -->
-								<tr>
-								
-									<td>{{ estacion.id }}</td>
-									
-									<td>{{ estacion.nombre }}</td>
-									
-									<td style="text-align: center;"> 
-										<a href="{{ estacion.ubicacion }}"> 
-											Link 
-										</a> 
-									</td>
-									
-									<td style="text-align: center;">
-										<p
-											class="
-												{% if estacion.estado == 'Disponible' %}
-													boton_disponible
-												{% elif estacion.estado == 'No disponible' %}
-													boton_no_disponible
-												{% elif estacion.estado == 'Fuera de servicio' %}
-													boton_fuera_servicio
-												{% else %}
-													boton_mantenimiento
-												{% endif %}
-											"
-										>
-											{{ estacion.estado }} 
-										</p>
-									</td>
-									
-									<td style="text-align: center;">
-										<input 
-											form="form-estacion-{{forloop.counter}}" 
-											type="submit" 
-											value="Apagar estación" 
-											class="boton_no_disponible">
-										</input>
-									</td>
-								
-								</tr>
-							</form>
-		
-						{% endfor %}
-						
-					</table>
-				</div>
-				
-				{% if resultado %}
-					<script>
-						alert(" {{ resultado }} ");
-					</script>
-				{% endif %}
-				
-			</section>
+						</table>
+					</div>
+					
+					{% if resultado %}
+						<script>
+							alert(" {{ resultado }} ");
+						</script>
+					{% endif %}
+					
+				</section>
+			</main>
 			
 		</div>
 		
 	</body>
 	
 </html>
+
 
