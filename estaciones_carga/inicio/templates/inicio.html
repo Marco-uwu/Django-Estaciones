@@ -1,158 +1,228 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Estaciones de Carga</title>
-    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
-    <link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
-  </head>
-  <body>
 
-        <section style="background-color: #FFFF;">
-          <div>
-                <h1 class="centered-title">
-                  <img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
-                  Estaciones de Carga
-                </h1>
-          </div>
-        </section>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		
+		<title>Estaciones de Carga</title>
+		
+		<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
+		<link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
+	</head>
+	
+	<body>
+	
+		<!-- Encabezado -->
+		<section style="background-color: #FFFF; width: 100%">
+		  <div>
+				<h1 class="centered-title">
+				  <img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
+				  Estaciones de Carga
+				</h1>
+		  </div>
+		</section>
+		
+		<!-- Contenedor de la página -->
+		<div class="demo-page">
+		
+		
+			<!-- Menú de navegación -->
+			<div class="demo-page-navigation">
+				<nav>
+					<ul>
+					
+						<li>
+							<a href="#estaciones">
+								<img src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" alt="Icono de estaciones" width="24" height="24" style="margin-right: 8px;">
+								Estaciones
+							</a>
+						</li>
+						
+						<li>
+							<a href="#parametros">
+								<img src="{% static 'icons/message-circle-exclamation-svgrepo-com.svg' %}" alt="Icono de parámetros" width="24" height="24" style="margin-right: 8px;">
+								Parámetros
+							</a>
+						</li>
+						
+						<li>
+							<a href="#graficas">
+								<img src="{% static 'icons/chart-pie-alt-1-svgrepo-com.svg' %}" alt="Icono de gráficas" width="24" height="24" style="margin-right: 8px;">
+								Gráficas
+							</a>
+						</li>
+						
+						<li>
+							<a href="{% url 'logout' %}">
+							<img src="{% static 'icons/user-xmark-svgrepo-com.svg' %}" alt="Icono de gráficas" width="24" height="24" style="margin-right: 8px;">
+							Cerrar sesión
+							</a>
+						</li>
+						
+					</ul>
+				</nav>
+			</div>
+			
+			
+			<!-- Contenedor principal de la página -->
+			<main class="demo-page-content">
+				
+				<!-- Sección "Estaciones" -->
+				<section> <div class="href-target" id="estaciones"></div>
+					
+					<h1>
+						<img src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 8px;">
+						Estaciones
+					</h1>
+					<p>Consulta el estado actual de las estaciones.</p>
+					
+					<div>
+						<table>
+						
+							<tr>
+								<th>Nombre</th>
+								<th>Ubicación</th>
+								<th>Estado</th>
+							</tr>
+							
+							{% for estacion in estaciones %}
+							
+								<tr>
+									<td>
+										{{ estacion.nombre }}
+									</td>
+									
+									<td style="text-align: center;">
+										<a href="{{ estacion.ubicacion }}">Link</a>
+									</td>
+									
+									<td style="display: flex;justify-content: center;align-items: center;" >
+										<button class="{% if estacion.estado == 'Disponible' %}boton_disponible{% elif estacion.estado == 'No disponible' %}boton_no_disponible{% elif estacion.estado == 'Fuera de servicio' %}boton_fuera_servicio{% else %}boton_mantenimiento{% endif %}" readonly>
+											{{ estacion.estado }} 
+										</button>
+									</td>
+								</tr>
+								
+							{% endfor %}
+						
+						</table>
+					</div>
+					
+					<details>
+						<summary>
+							<a href="{% url 'estatus' %}" class="red-button">
+								<img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
+								<span class="text">
+									Ver más
+								</span>
+							</a>
+						</summary>
+					</details>
+					
+				</section>
+				
+				
+				<!-- Sección "parámetros" -->
+				<section> <div class="href-target" id="parametros"></div>
+				
+					<h1>
+						<img src="{% static 'icons/message-circle-exclamation-svgrepo-com.svg' %}" alt="Icono de parámetros" width="24" height="24" style="margin-right: 8px;">
+						Parámetros de operación
+					</h1>
+					<p>
+						Modifica los parámetros de operación para las estaciones.
+					</p>
+					
+					<table>
+					
+						<tr>
+							<th>Parámetro</th>
+							<th>Mínimo</th>
+							<th>Óptimo</th>
+							<th>Máximo</th>
+							<th>Unidad</th>
+						</tr>
+						
+						{% for parametro in parametros %}
 
+							<tr>
+								<td>
+									{{ parametro.id_tipo_medicion.descripcion }}
+								</td>
+								
+								<td style="color:Blue">
+									{{ parametro.valor_min }}
+								</td>
+								
+								<td style="color:Green">
+									{{ parametro.valor_ide }}
+								</td>
+								
+								<td style="color:Red">
+									{{ parametro.valor_max }}
+								</td>
+								
+								<td>
+									{% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}
+								</td>
+							</tr>
+							
+						{% endfor %}
+					
+					</table>
 
-    <div class="demo-page">
-      <div class="demo-page-navigation">
-        <nav>
-          <ul>
-            <li>
-              <a href="#estaciones">
-                <img src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" alt="Icono de estaciones" width="24" height="24" style="margin-right: 8px;">
-                Estaciones
-              </a>
-            </li>
-            <li>
-              <a href="#parametros">
-                <img src="{% static 'icons/message-circle-exclamation-svgrepo-com.svg' %}" alt="Icono de parámetros" width="24" height="24" style="margin-right: 8px;">
-                Parámetros
-              </a>
-            </li>
-            <li>
-              <a href="#graficas">
-                <img src="{% static 'icons/chart-pie-alt-1-svgrepo-com.svg' %}" alt="Icono de gráficas" width="24" height="24" style="margin-right: 8px;">
-                Gráficas
-              </a>
-            </li>
-	                <li>
-              <a href="{% url 'logout' %}">
-		      <img src="{% static 'icons/user-xmark-svgrepo-com.svg' %}" alt="Icono de gráficas" width="24" height="24" style="margin-right: 8px;">
-		      Cerrar sesión
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <main class="demo-page-content">
-        <section>
-          <div class="href-target" id="estaciones"></div>
-          <h1>
-            <img src="{% static 'icons/circle-plug-alt-svgrepo-com.svg' %}" alt="Icono de estaciones" width="24" height="24" style="margin-right: 8px;">
-            Estaciones
-          </h1>
-          <p>Consulta el estado actual de las estaciones.</p>
-          <div>
-            <table>
-              <tr>
-                <th>Nombre</th>
-                <th>Ubicación</th>
-                <th>Estado</th>
-              </tr>
-                {% for estacion in estaciones %}
-                <tr>
-                <td>{{ estacion.nombre }}</td>
-		<td style="text-align: center;"><a href="{{ estacion.ubicacion }}">Link</a></td>
-				<td style="display: flex;justify-content: center;align-items: center;" >
-					<button class="
-					{% if estacion.estado == 'Disponible' %}
-						boton_disponible
-					{% elif estacion.estado == 'No disponible' %}
-						boton_no_disponible
-					{% elif estacion.estado == 'Fuera de servicio' %}
-						boton_fuera_servicio
-					{% else %}
-						boton_mantenimiento
-					{% endif %}
-					" readonly> {{ estacion.estado }} </button>
-				</td>
-                </tr>
-                {% endfor %}
-            </table>
-          </div>
-          <details>
-            <summary>
-              <a href="{% url 'estatus' %}" class="red-button">
-                                <img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
-                                <span class="text">Ver más</span>
-                          </a>
-            </summary>
-          </details>
-        </section>
-        <section>
-          <div class="href-target" id="parametros"></div>
-          <h1>
-            <img src="{% static 'icons/message-circle-exclamation-svgrepo-com.svg' %}" alt="Icono de parámetros" width="24" height="24" style="margin-right: 8px;">
-            Parámetros de operación
-          </h1>
-          <p>Modifica los parámetros de operación para las estaciones.</p>
-                        {% for parametro in parametros %}
-                <h1>{% cycle 'Voltaje 1' 'Voltaje 2' 'Voltaje 3' 'Voltaje 4' 'Voltaje 5' 'Intensidad 1'  'Intensidad 2' 'Temperatura'%}</h1>
-                <small>{% cycle 'Voltaje de entrada al inversor' 'Voltaje del aerogenerador' 'Voltaje de carga de batería' 'Voltaje de CFE' 'Voltaje de entrada al inversor' 'Corriente del módulo regulador' 'Corriente del módulo inversor' 'Temperatura del banco de baterías'%}</small>
-
-                                <table>
-                                        <tr>
-                                                        <th>Mínimo</th>
-                                                        <th>Óptimo</th>
-                                                        <th>Máximo</th>
-                                        </tr>
-                                        <tr>
-                                                        <td style="color:Blue">{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}</td>
-                                                        <td style="color:Green">{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}</td>
-                                                        <td style="color:Red">{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}</td>
-                                        </tr>
-                                </table>
-                                <br>
-                        {% endfor %}
-
-          <details>
-            <summary>
-                                <a href="{% url 'parametros' %}" class="red-button">
-                                        <img src="{% static 'icons/file-pencil-alt-svgrepo-com.svg' %}" width="24" height="24">
-                                        <span class="text">Modificar</span>
-                                </a>
-            </summary>
-          </details>
-        </section>
-        <section>
-          <div class="href-target" id="graficas"></div>
-          <h1>
-            <img src="{% static 'icons/chart-pie-alt-1-svgrepo-com.svg' %}" alt="Icono de gráficas" width="24" height="24" style="margin-right: 8px;">
-            Gráficas
-          </h1>
-          <p>Analiza los gráficos de mediciones.</p>
-          <div>
-                  <img src="{% static 'images/grafica.png'%}" alt="Gráfica de muestra" width="100%" height="100%">
-          </div>
-          <details>
-            <summary>
-                                <button class="red-button">
-                                        <img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
-                                        <span class="text">Ver más</span>
-                                </button>
-            </summary>
-          </details>
-        </section>
-        <footer>Trabajo Terminal 2024-B068</footer>
-      </main>
-    </div>
-  </body>
+					<details>
+						<summary>
+							<a href="{% url 'parametros' %}" class="red-button">
+								<img src="{% static 'icons/file-pencil-alt-svgrepo-com.svg' %}" width="24" height="24">
+								<span class="text">Modificar</span>
+							</a>
+						</summary>
+					</details>
+					
+				</section>
+				
+				
+				<!-- Sección "estadísticas" -->
+				<section> <div class="href-target" id="graficas"></div>
+				
+					<h1>
+						<img src="{% static 'icons/chart-pie-alt-1-svgrepo-com.svg' %}" alt="Icono de gráficas" width="24" height="24" style="margin-right: 8px;">
+						Gráficas
+					</h1>
+					<p>
+						Analiza los gráficos de mediciones.
+					</p>
+					
+					<div>
+						<img src="{% static 'images/grafica.png'%}" alt="Gráfica de muestra" width="100%" height="100%">
+					</div>
+					
+					<details>
+						<summary>
+							<button class="red-button">
+								<img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
+								<span class="text">Ver más</span>
+							</button>
+						</summary>
+					</details>
+					
+				</section>
+				
+				
+				<!-- Pie de página -->
+				<footer>Trabajo Terminal 2024-B068</footer>
+				
+				
+			</main>
+			
+			
+		</div>
+		
+	</body>
+	
 </html>
+
