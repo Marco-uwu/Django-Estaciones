@@ -16,11 +16,15 @@ def parametros(request):
     tipo_regla = request.GET.get('regla', '')
 
     if tipo_regla:
-        valores = ParametrosMedicion.objects.filter(id_regla=tipo_regla)
+        valores_regla = ParametrosMedicion.objects.filter(id_regla=tipo_regla)
+    else:
+        valores_regla = []
 
     if request.method == "POST":
         tipos = ["min", "ide", "max"]
         resultado = []  # Guarda los valores ingresados para depuración o procesamiento
+        valor_id_regla = request.POST.get('id_regla')
+        parametros = ParametrosMedicion.objects.filter(id_regla=valor_id_regla)
 
         for i in range(8):
             valores = []
@@ -51,7 +55,7 @@ def parametros(request):
         'parametros': parametros,
         'reglas': reglas,
         'mensaje': mensaje,
-        'valores': valores,
+        'valores_regla': valores_regla,
     }
 
     return render(request, 'index_parametros.html', context)

@@ -74,55 +74,6 @@
 			<!-- Tablas de información -->
 			<main class="demo-page-content" style="width: 100%">
 
-				<!-- Sección "Parámetros" -->
-				<section>
-					<div>
-						<h1 style="color:black;font-size:35px;text-align: center;">
-							Parámetros de operación
-						</h1>
-						<p style="font-size:17px;text-align: left;margin: 30px;">
-							Modifica los límites máximos y mínimos para cada estación. Si los valores de medición superan estos límites, se activarán las alertas.
-						</p>
-					</div>
-
-					<div class="nice-form-group">
-
-						<form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
-							{% csrf_token %}
-
-							{% for parametro in parametros %}
-								<div class="nice-form-group" style="margin: 15px;">
-									<h1>
-										{% cycle 'Voltaje 1' 'Voltaje 2' 'Voltaje 3' 'Voltaje 4' 'Voltaje 5' 'Intensidad 1'  'Intensidad 2' 'Temperatura'%}
-									</h1>
-									<small>
-										{% cycle 'Voltaje de entrada al inversor' 'Voltaje del aerogenerador' 'Voltaje de carga de batería' 'Voltaje de CFE' 'Voltaje de entrada al inversor' 'Corriente del módulo regulador' 'Corriente del módulo inversor' 'Temperatura del banco de baterías'%}
-									</small>
-								</div>
-
-								<div class="nice-form-group">
-									<span style="margin: 30px;">
-										<div style="display: inline-block;width: 33%"><strong style="color: blue">Mínimo</strong></div>
-										<div style="display: inline-block;width: 33%"><strong style="color: green">Óptimo</strong></div>
-										<div style="display: inline-block;width: 33%"><strong style="color: red">Máximo</strong></div>
-									</span>
-								</div>
-
-								<div class="nice-form-group" style="margin: 0px;">
-									<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_min }}" required>
-									<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_ide }}" required>
-									<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_max }}" required>
-								</div>
-							{% endfor %}
-						</form>
-					</div>
-
-					<details>
-						<summary style="display: flex; justify-content: flex-end;">
-							<input type="submit" value="Guardar cambios" form="form-parametros" class="red-button">
-						</summary>
-					</details>
-				</section>
 
 				<!-- Sección "Reglas" -->
 				<section>
@@ -169,8 +120,8 @@
 									<td></td>
 								</tr>
 							{% else %}
-								{% if valores %}
-									{% for valor in valores%}
+								{% if valores_regla %}
+									{% for valor in valores_regla%}
 										<tr>
 											<td>{{valor.id_tipo_medicion.descripcion}}</td>
 											<td>{{valor.valor_min}}</td>
@@ -196,6 +147,65 @@
 					</details>
 
 				</section>
+				
+				
+				<!-- Sección "Parámetros" -->
+				<section>
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Parámetros de operación
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Modifica los límites máximos y mínimos para cada estación. Si los valores de medición superan estos límites, se activarán las alertas.
+						</p>
+					</div>
+
+					<div class="nice-form-group">
+
+						<form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
+							{% csrf_token %}
+							<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+                                                        <input form="form-parametros" type="hidden"
+                                                                id="id_regla"
+                                                                name="id_regla"
+								value="{% if request.GET.regla %}{{ request.GET.regla }}{% endif %}"
+                                                        >
+
+							{% for parametro in valores_regla %}
+								<div class="nice-form-group" style="margin: 15px;">
+									<h1>
+										{% cycle 'Voltaje 1' 'Voltaje 2' 'Voltaje 3' 'Voltaje 4' 'Voltaje 5' 'Intensidad 1'  'Intensidad 2' 'Temperatura'%}
+									</h1>
+									<small>
+										{% cycle 'Voltaje de entrada al inversor' 'Voltaje del aerogenerador' 'Voltaje de carga de batería' 'Voltaje de CFE' 'Voltaje de entrada al inversor' 'Corriente del módulo regulador' 'Corriente del módulo inversor' 'Temperatura del banco de baterías'%}
+									</small>
+								</div>
+
+								<div class="nice-form-group">
+									<span style="margin: 30px;">
+										<div style="display: inline-block;width: 33%"><strong style="color: blue">Mínimo</strong></div>
+										<div style="display: inline-block;width: 33%"><strong style="color: green">Óptimo</strong></div>
+										<div style="display: inline-block;width: 33%"><strong style="color: red">Máximo</strong></div>
+									</span>
+								</div>
+
+								<div class="nice-form-group" style="margin: 0px;">
+									<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_min }}" required>
+									<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_ide }}" required>
+									<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_max }}" required>
+								</div>
+							{% endfor %}
+						</form>
+					</div>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							{% if request.GET.regla %}
+							<input type="submit" value="Guardar cambios" form="form-parametros" class="red-button">
+							{% endif %}
+						</summary>
+					</details>
+				</section>
 
 			</main>
 
@@ -211,4 +221,5 @@
 
 	</body>
 </html>
+
 
