@@ -52,18 +52,17 @@
 				<nav>
 					<ul>
 						<li>
-							<a href="#" data-section="seccion_parametros">
-								<img src="{% static 'icons/square-sliders-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-								Modificar
-							</a>
-						</li>
-					</ul>
-
-					<ul>
-						<li>
 							<a href="#" data-section="seccion_reglas">
 								<img src="{% static 'icons/square-list-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
 								Reglas
+							</a>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<a href="#" data-section="seccion_agregar">
+								<img src="{% static 'icons/square-medical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Nueva regla
 							</a>
 						</li>
 					</ul>
@@ -95,7 +94,7 @@
 							{% endfor %}
 						</select>
 					</div>
-					
+
 					<div>
 						<table>
 							<tr>
@@ -131,9 +130,9 @@
 									{% endfor %}
 								{% endif %}
 							{% endif %}
-							
-							
-							
+
+
+
 						</table>
 					</div>
 
@@ -147,8 +146,8 @@
 					</details>
 
 				</section>
-				
-				
+
+
 				<!-- Sección "Parámetros" -->
 				<section id='seccion_parametros' style="display:none">
 					<div>
@@ -165,11 +164,16 @@
 						<form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
 							{% csrf_token %}
 							<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
-                                                        <input form="form-parametros" type="hidden"
-                                                                id="id_regla"
-                                                                name="id_regla"
+							<input form="form-parametros" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="1"
+							>
+							<input form="form-parametros" type="hidden"
+								id="id_regla"
+								name="id_regla"
 								value="{% if request.GET.regla %}{{ request.GET.regla }}{% endif %}"
-                                                        >
+							>
 
 							{% for parametro in valores_regla %}
 								<div class="nice-form-group" style="margin: 15px;">
@@ -202,17 +206,88 @@
 						<summary style="display: flex; justify-content: flex-end;">
 							{% if request.GET.regla %}
 							 <a href="#" data-section="seccion_reglas" class="red-button" style="margin-right: 10px">
-                                                                <span class="text">Cancelar</span>
-                                                        </a>
+								<span class="text">Cancelar</span>
+							</a>
 							<input type="submit" value="Guardar cambios" form="form-parametros" class="red-button">
 							{% endif %}
 						</summary>
 					</details>
 				</section>
+				
+				
+				<!-- Sección "Nueva Regla" -->
+				<section id='seccion_agregar' style="display:none">
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Nueva regla
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Crea una regla nueva, define los límites para los parámetros de operación.
+						</p>
+					</div>
+
+					<div class="nice-form-group">
+
+						<form onsubmit="validarFormularioCreacion(event)" id="form-creacion" method="post">
+							{% csrf_token %}
+							<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+							<input form="form-creacion" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="2"
+							>
+							
+							<div class="nice-form-group" style="margin-top: 15px;margin-right: 15px;margin-bottom: 30px;margin-left: 15px;">
+								<div class="nice-form-group" style="margin-bottom: 15px;">
+									<h1>
+										Nombre de regla
+									</h1>
+									<small>
+										Asigna un nombre para identificar tu nueva regla.
+									</small>
+								</div>
+								<input form="form-creacion" id="nombre_regla" name="nombre_regla" type="text" placeholder="Nombre de nueva regla" value="" required>
+							</div>
+							
+							{% for i in "12345678" %}
+								<div class="nice-form-group" style="margin: 15px;">
+									<h1>
+										{% cycle 'Voltaje 1' 'Voltaje 2' 'Voltaje 3' 'Voltaje 4' 'Voltaje 5' 'Intensidad 1'  'Intensidad 2' 'Temperatura'%}
+									</h1>
+									<small>
+										{% cycle 'Voltaje de entrada al inversor' 'Voltaje del aerogenerador' 'Voltaje de carga de batería' 'Voltaje de CFE' 'Voltaje de entrada al inversor' 'Corriente del módulo regulador' 'Corriente del módulo inversor' 'Temperatura del banco de baterías'%}
+									</small>
+								</div>
+
+								<div class="nice-form-group">
+									<span style="margin: 30px;">
+										<div style="display: inline-block;width: 33%"><strong style="color: blue">Mínimo</strong></div>
+										<div style="display: inline-block;width: 33%"><strong style="color: green">Óptimo</strong></div>
+										<div style="display: inline-block;width: 33%"><strong style="color: red">Máximo</strong></div>
+									</span>
+								</div>
+
+								<div class="nice-form-group" style="margin: 0px;">
+									<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="1.01" required>
+									<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="2.02" required>
+									<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="3.03" required>
+								</div>
+							{% endfor %}
+						</form>
+					</div>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							
+							<input type="submit" value="+ Crear" form="form-creacion" class="red-button">
+							
+						</summary>
+					</details>
+				</section>
 
 			</main>
-
-
+			
+			
 		</div>
 
 
@@ -224,5 +299,4 @@
 
 	</body>
 </html>
-
 

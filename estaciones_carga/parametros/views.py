@@ -21,34 +21,58 @@ def parametros(request):
         valores_regla = []
 
     if request.method == "POST":
+
+        tipo_formulario = request.POST.get('id_formulario', None)
         tipos = ["min", "ide", "max"]
-        resultado = []  # Guarda los valores ingresados para depuración o procesamiento
-        valor_id_regla = request.POST.get('id_regla')
-        parametros = ParametrosMedicion.objects.filter(id_regla=valor_id_regla)
+        resultado = []
+        
+        if tipo_formulario == "1":
 
-        for i in range(8):
-            valores = []
-            for tipo in tipos:
-                nombre = f"v_{tipo}_{str(i+1)}"
-                valor = request.POST.get(nombre, None)
+            valor_id_regla = request.POST.get('id_regla')
+            parametros = ParametrosMedicion.objects.filter(id_regla=valor_id_regla)
 
-                # Valida que el valor no sea None antes de agregarlo
-                if valor is not None:
-                    valores.append(valor)
-                else:
-                    valores.append("")  # Agregar un valor vacío si falta
+            for i in range(8):
+                valores = []
+                for tipo in tipos:
+                    nombre = f"v_{tipo}_{str(i+1)}"
+                    valor = request.POST.get(nombre, None)
 
-            resultado.append(valores)  # Agregar al resultado completo
+                    # Valida que el valor no sea None antes de agregarlo
+                    if valor is not None:
+                        valores.append(valor)
+                    else:
+                        valores.append("")  # Agregar un valor vacío si falta
 
-            # Asignar valores a los parámetros correspondientes
-            if i < len(parametros):  # Evitar errores de índice si hay menos de 8 parámetros
-                parametros[i].valor_min = valores[0]
-                parametros[i].valor_ide = valores[1]
-                parametros[i].valor_max = valores[2]
-                parametros[i].save()  # Guarda los cambios en la base de datos
+                resultado.append(valores)  # Agregar al resultado completo
 
-                # Construir el mensaje acumulativo
-        mensaje = "Cambios guardados correctamente! :)"
+                # Asignar valores a los parámetros correspondientes
+                if i < len(parametros):  # Evitar errores de índice si hay menos de 8 parámetros
+                    parametros[i].valor_min = valores[0]
+                    parametros[i].valor_ide = valores[1]
+                    parametros[i].valor_max = valores[2]
+                    parametros[i].save()  # Guarda los cambios en la base de datos
+
+                    # Construir el mensaje acumulativo
+            mensaje = "Cambios guardados correctamente! :)"
+        elif tipo_formulario == "2":
+            nuevo_nombre = request.POST.get('nombre_regla')
+            nueva_regla = ReglasMedicion(nombre=nuevo_nombre)
+            nueva_regla.save()
+
+            for id_medicion in range(1,9):
+                obj_tipo_medicion = TiposMedicion.objects.get(id=id_medicion)
+                nuevo_parametro = ParametrosMedicion(
+                    id_regla = nueva_regla,
+                    id_tipo_medicion = obj_tipo_medicion,
+                    valor_min= request.POST.get(f'v_min_{str(id_medicion)}'),
+                    valor_ide= request.POST.get(f'v_ide_{str(id_medicion)}'),
+                    valor_max= request.POST.get(f'v_max_{str(id_medicion)}')
+                )
+                nuevo_parametro.save()
+            
+            mensaje = "Regla creada exitosamente"
+        else:
+            mensaje = "Error en solicitud POST"
 
     # Contexto para el template
     context = {
@@ -59,4 +83,5 @@ def parametros(request):
     }
 
     return render(request, 'index_parametros.html', context)
+
 
