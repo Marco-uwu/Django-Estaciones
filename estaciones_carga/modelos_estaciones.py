@@ -1,12 +1,4 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
 
 class Estaciones(models.Model):
     id_regla = models.ForeignKey('ReglasMedicion', models.DO_NOTHING, db_column='id_regla')
@@ -14,6 +6,7 @@ class Estaciones(models.Model):
     ubicacion = models.CharField(max_length=255, blank=True, null=True)
     estado = models.CharField(max_length=17)
     dir_mac = models.CharField(unique=True, max_length=16)
+    id_tarifa = models.ForeignKey('Tarifas', models.DO_NOTHING, db_column='id_tarifa', blank=True, null=True)
 
     class Meta:
         managed = False
@@ -52,6 +45,34 @@ class ReglasMedicion(models.Model):
         db_table = 'reglas_medicion'
 
 
+class Reportes(models.Model):
+    id_medicion = models.ForeignKey(Mediciones, models.DO_NOTHING, db_column='id_medicion')
+
+    class Meta:
+        managed = False
+        db_table = 'reportes'
+
+
+class SesionesCarga(models.Model):
+    fecha_inicio = models.DateTimeField()
+    fecha_fin = models.DateTimeField(blank=True, null=True)
+    id_estacion = models.ForeignKey(Estaciones, models.DO_NOTHING, db_column='id_estacion')
+
+    class Meta:
+        managed = False
+        db_table = 'sesiones_carga'
+
+
+class Tarifas(models.Model):
+    descripcion = models.CharField(max_length=255, blank=True, null=True)
+    precio = models.DecimalField(max_digits=5, decimal_places=2)
+    moneda = models.CharField(max_length=3)
+
+    class Meta:
+        managed = False
+        db_table = 'tarifas'
+
+
 class TiposMedicion(models.Model):
     descripcion = models.CharField(unique=True, max_length=50)
     tipo_medicion = models.CharField(max_length=3)
@@ -59,3 +80,4 @@ class TiposMedicion(models.Model):
     class Meta:
         managed = False
         db_table = 'tipos_medicion'
+

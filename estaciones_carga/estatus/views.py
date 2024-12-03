@@ -40,9 +40,9 @@ def estatus(request):
     estacion_mediciones = request.GET.get('estacion_medicion', '')
 
     if estacion_mediciones:
-        mediciones = Mediciones.objects.filter(id_estacion=estacion_mediciones)[:100]
+        mediciones = Mediciones.objects.filter(id_estacion=estacion_mediciones).order_by('fecha')
     else:
-        mediciones = Mediciones.objects.all()[:100]
+        mediciones = Mediciones.objects.all().order_by('fecha')
 
     # Configurar el paginador para 10 registros por página
     paginator = Paginator(mediciones, 10)

@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 class Estaciones(models.Model):
     id_regla = models.ForeignKey('ReglasMedicion', models.DO_NOTHING, db_column='id_regla')
