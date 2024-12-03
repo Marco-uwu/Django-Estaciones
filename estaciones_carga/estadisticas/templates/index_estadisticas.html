@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
+		<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/estilos_parametros.css' %}" />
+
+		<script src="{% static 'js/scripts.js' %}"></script>
+
+		<title>Estaciones de Carga</title>
+	</head>
+
+	<body>
+
+
+		<!-- Encabezado -->
+		<section style="background-color: #FFFF;">
+			<div>
+				<h1 class="centered-title">
+					<img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
+					Estaciones de Carga
+				</h1>
+			</div>
+		</section>
+
+
+		<!-- Contenedor de la página -->
+		<div class="demo-page" >
+
+
+			<!-- Bloque de navegación -->
+			<div class="demo-page-navigation" >
+
+				<nav>
+					<ul>
+						<li>
+							<a href="{% url 'inicio' %}">
+								<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Inicio
+							</a>
+						</li>
+					</ul>
+				</nav>
+
+				<br>
+
+				<nav>
+					<ul>
+						<li>
+							<a href="#" data-section="seccion_estadisticas">
+								<img src="{% static 'icons/chart-pie-alt-1-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Estadísticas
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+
+
+			<!-- Tablas de información -->
+			<main class="demo-page-content" style="width: 100%">
+
+
+				<!-- Sección "Estadísticas" -->
+				<section id='seccion_estadisticas'>
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Estadísticas
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Consulta llas estadísticas de las diferentes estaciones de la red, en base a los parámetros previamente proporcionados.
+						</p>
+					</div>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							
+						</summary>
+					</details>
+
+				</section>
+
+			</main>
+			
+			
+		</div>
+
+
+		{% if mensaje %}
+			<script>
+				alert(" {{ mensaje }} ");
+			</script>
+		{% endif %}
+
+	</body>
+</html>
+

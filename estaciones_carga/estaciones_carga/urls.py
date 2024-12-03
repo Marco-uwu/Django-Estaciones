@@ -23,5 +23,5 @@ urlpatterns = [
     path('', include('inicio.urls')),
     path('', include('estatus.urls')),
     path('', include('parametros.urls')),
-    path('', include('pruebaCodigo.urls')),
+    path('', include('estadisticas.urls')),
 ]
