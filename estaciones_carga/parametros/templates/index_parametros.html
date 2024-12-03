@@ -138,9 +138,10 @@
 
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
-							<a href="#" data-section="seccion_parametros" class="red-button">
+							
+							<a {% if request.GET.regla %}href="#" data-section="seccion_parametros"{% endif %} class="red-button" >
 								<img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
-								<span class="text">Editar</span>
+								<span class="text">Modificar</span>
 							</a>
 						</summary>
 					</details>
@@ -148,7 +149,7 @@
 				</section>
 
 
-				<!-- Sección "Parámetros" -->
+				<!-- Sección "Modificar reglas" -->
 				<section id='seccion_parametros' style="display:none">
 					<div>
 						<h1 style="color:black;font-size:35px;text-align: center;">
@@ -160,6 +161,25 @@
 					</div>
 
 					<div class="nice-form-group">
+					
+						<h1 style="color:black;font-size:25px;text-align: center;">
+							Modificando regla: {% for regla in reglas %} {% if request.GET.regla == regla.id|stringformat:"s" %} {{regla.nombre}} {%endif%} {% endfor %}
+						</h1>
+						
+						<form onsubmit="" id="form-eliminar" method="post">
+							{% csrf_token %}
+							<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+							<input form="form-eliminar" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="3"
+							>
+							<input form="form-eliminar" type="hidden"
+								id="id_regla_eliminar"
+								name="id_regla_eliminar"
+								value="{% if request.GET.regla %}{{ request.GET.regla }}{% endif %}"
+							>
+						</form>
 
 						<form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
 							{% csrf_token %}
@@ -204,10 +224,11 @@
 
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
-							{% if request.GET.regla %}
-							 <a href="#" data-section="seccion_reglas" class="red-button" style="margin-right: 10px">
+							<a href="#" data-section="seccion_reglas" class="red-button" style="margin-right: 10px">
 								<span class="text">Cancelar</span>
 							</a>
+							{% if request.GET.regla %}
+							<input type="submit" value="Eliminar" form="form-eliminar" class="red-button" style="margin-right: 10px;background-color: #D63A13;border: 2px solid #B91311;">
 							<input type="submit" value="Guardar cambios" form="form-parametros" class="red-button">
 							{% endif %}
 						</summary>

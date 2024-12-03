@@ -71,6 +71,16 @@ def parametros(request):
                 nuevo_parametro.save()
             
             mensaje = "Regla creada exitosamente"
+        elif tipo_formulario == "3":
+            id_regla_eliminar = request.POST.get('id_regla_eliminar')
+            try:
+                ParametrosMedicion.objects.filter(id_regla=id_regla_eliminar).delete()
+                regla = ReglasMedicion.objects.get(id=id_regla_eliminar)
+                regla.delete()
+                
+                mensaje = "Regla y parámetros eliminados exitosamente"
+            except ReglasMedicion.DoesNotExist:
+                mensaje = "La regla con el ID especificado no existe"
         else:
             mensaje = "Error en solicitud POST"
 
