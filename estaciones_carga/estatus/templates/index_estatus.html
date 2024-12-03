@@ -190,7 +190,7 @@
 
 					<div class="nice-form-group" >
 					
-						<select id="filtro-estacion" name="estacion_medicion" onchange="filtrarEstacion()">
+						<select style="margin-left: 5%;margin-right: 5%; width: 90%" id="filtro-estacion" name="estacion_medicion" onchange="filtrarEstacion()">
 							<option value="" {% if not request.GET.estacion_medicion %}selected{% endif %}>Selecciona una estación</option>
 							{% for estacion in estaciones %}
 								<option value="{{estacion.id}}" {% if request.GET.estacion_medicion == estacion.id|stringformat:"s" %}selected{% endif %}>{{estacion.nombre}}</option>
@@ -199,7 +199,7 @@
 						
 						<table>
 							<tr>
-								<th colspan="5" id="encabezado_mediciones"> {% if not page_obj %}Selecciona una estación{%else%} {{page_obj.0.id_estacion}} {% endif %} </th>
+								<th colspan="5" id="encabezado_mediciones"> {% if not request.GET.estacion_medicion %}Selecciona una estación{% else %} {% for estacion in estaciones %} {% if request.GET.estacion_medicion == estacion.id|stringformat:"s" %} {{estacion.nombre}} {%endif%} {% endfor %}{% endif %} </th>
 							</tr>
 							<tr>
 								<th>ID</th>
@@ -208,7 +208,7 @@
 								<th>Unidad</th>
 								<th>Tipo</th>
 							</tr>
-						{% if not page_obj %}
+						{% if not request.GET.estacion_medicion or not page_obj%}
 							<tr>
 								<td></td>
 								<td></td>
@@ -216,16 +216,18 @@
 								<td></td>
 								<td></td>
 							</tr>
+						
+						{% else %}
+							{% for medicion in page_obj %}
+                                                        	<tr>
+                                                        	<td>{{ medicion.id }}</td>
+                                                        	<td>{{ medicion.fecha }}</td>
+                                                        	<td>{{ medicion.valor }}</td>
+                                                        	<td>{% if medicion.id_tipo_medicion.tipo_medicion == 'I' %} A {% elif medicion.id_tipo_medicion.tipo_medicion == 'T'%} °C {% else %} {{medicion.id_tipo_medicion.tipo_medicion}}{% endif %}</td>
+                                                        	<td>{{ medicion.id_tipo_medicion.descripcion }}</td>
+                                                        	</tr>
+                                                	{% endfor %}
 						{% endif %}
-						{% for medicion in page_obj %}
-							<tr>
-							<td>{{ medicion.id }}</td>
-							<td>{{ medicion.fecha }}</td>
-							<td>{{ medicion.valor }}</td>
-							<td>{% if medicion.id_tipo_medicion.tipo_medicion == 'I' %} A {% elif medicion.id_tipo_medicion.tipo_medicion == 'T'%} °C {% else %} {{medicion.id_tipo_medicion.tipo_medicion}}{% endif %}</td>
-							<td>{{ medicion.id_tipo_medicion.descripcion }}</td>
-							</tr>
-						{% endfor %}
 						</table>
 
 						<br>
