@@ -52,7 +52,7 @@
 				<nav>
 					<ul>
 						<li>
-							<a href="">
+							<a href="#" data-section="seccion_parametros">
 								<img src="{% static 'icons/square-sliders-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
 								Modificar
 							</a>
@@ -61,7 +61,7 @@
 
 					<ul>
 						<li>
-							<a href="">
+							<a href="#" data-section="seccion_reglas">
 								<img src="{% static 'icons/square-list-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
 								Reglas
 							</a>
@@ -76,14 +76,14 @@
 
 
 				<!-- Sección "Reglas" -->
-				<section>
+				<section id='seccion_reglas'>
 
 					<div>
 						<h1 style="color:black;font-size:35px;text-align: center;">
 							Reglas
 						</h1>
 						<p style="font-size:17px;text-align: left;margin: 30px;">
-							Consulta los parámetros establecidos en cada regla.
+							Consulta los límites máximos y mínimos de medición por cada regla. Si los valores de medición superan estos límites en la estación asignada, se activarán las alertas.
 						</p>
 					</div>
 
@@ -139,10 +139,10 @@
 
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
-							<button class="red-button">
+							<a href="#" data-section="seccion_parametros" class="red-button">
 								<img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
 								<span class="text">Editar</span>
-							</button>
+							</a>
 						</summary>
 					</details>
 
@@ -150,13 +150,13 @@
 				
 				
 				<!-- Sección "Parámetros" -->
-				<section>
+				<section id='seccion_parametros' style="display:none">
 					<div>
 						<h1 style="color:black;font-size:35px;text-align: center;">
-							Parámetros de operación
+							Modificar reglas
 						</h1>
 						<p style="font-size:17px;text-align: left;margin: 30px;">
-							Modifica los límites máximos y mínimos para cada estación. Si los valores de medición superan estos límites, se activarán las alertas.
+							Modifica los límites máximos y mínimos de cada regla.
 						</p>
 					</div>
 
@@ -201,6 +201,9 @@
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
 							{% if request.GET.regla %}
+							 <a href="#" data-section="seccion_reglas" class="red-button" style="margin-right: 10px">
+                                                                <span class="text">Cancelar</span>
+                                                        </a>
 							<input type="submit" value="Guardar cambios" form="form-parametros" class="red-button">
 							{% endif %}
 						</summary>
