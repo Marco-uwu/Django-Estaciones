@@ -58,6 +58,30 @@
 							</a>
 						</li>
 					</ul>
+					<ul>
+						<li>
+							<a href="#" data-section="seccion_sesiones">
+								<img src="{% static 'icons/timer-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Sesiones de carga
+							</a>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<a href="#" data-section="seccion_tarifas">
+								<img src="{% static 'icons/circle-dollar-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Tarifas
+							</a>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<a href="#" data-section="seccion_modifica_tarifa">
+								<img src="{% static 'icons/circle-dollar-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Modifica Tarifas
+							</a>
+						</li>
+					</ul>
 				</nav>
 			</div>
 
@@ -74,20 +98,273 @@
 							Estadísticas
 						</h1>
 						<p style="font-size:17px;text-align: left;margin: 30px;">
-							Consulta llas estadísticas de las diferentes estaciones de la red, en base a los parámetros previamente proporcionados.
+							Analiza el resumen de datos estadísticos de todas las estaciones de la red.
 						</p>
+					</div>
+					
+					<div>
+						<table>
+							<tr>
+								<th>
+									Total de sesiones
+								</th>
+							</tr>
+
+							<tr>
+								<td>{{num_sesiones}}</td>
+							</tr>
+
+						</table>
+					</div>
+					
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							<br>
+						</summary>
+					</details>
+					
+				</section>
+				
+				<!-- Sección "Sesiones de Carga" -->
+				<section id='seccion_sesiones' style="display:none">
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Sesiones de carga
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Analiza el registro de sesiones de carga de las estaciones, filtrando por la estación de tu interés.
+						</p>
+					</div>
+					
+					
+					<form id="select_sesiones" method="post" action="">
+						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+						{% csrf_token %}
+						<input form="select_sesiones" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="1"
+						>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="estacion">Filtrar por estación:</label>
+							<select form="select_sesiones" id="estacion" name="estacion" onchange="this.form.submit()">
+								<option value="">Todas</option>
+								{% for estacion in estaciones %}
+								<option value="{{ estacion.id }}" {% if estacion.id|stringformat:"s" == request.POST.estacion %}selected{% endif %}>
+									{{ estacion.nombre }}
+								</option>
+								{% endfor %}
+							</select>
+						</div>
+					</form>
+					
+					<div>
+						<table>
+							<tr>
+								<th colspan="4">
+									<h1 style="color:white;text-align: center;margin: 0px">
+										{%if request.POST.estacion %}
+											{% for estacion in estaciones %}
+												{% if estacion.id|stringformat:"s" == request.POST.estacion%}
+													Sesiones de carga de &#34;{{estacion.nombre}}&#34;
+												{% endif %}
+											{% endfor %}
+										{% else %}
+											Sesiones de carga
+										{% endif %}
+									</h1>
+								</th>
+							</tr>
+							<tr>
+								<th>
+									ID
+								</th>
+								<th>
+									Estación
+								</th>
+								<th>
+									Fecha de inicio
+								</th>
+								<th>
+									Fecha de fin
+								</th>
+							</tr>
+							{% if not sesiones %}
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							{% else %}
+								{% for sesion in sesiones %}
+									<tr>
+										<td>{{sesion.id}}</td>
+										<td>{{sesion.id_estacion.nombre}}</td>
+										<td>{{sesion.fecha_inicio}}</td>
+										<td>{{sesion.fecha_fin}}</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						</table>
 					</div>
 
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
-							
+							<br>
 						</summary>
 					</details>
 
 				</section>
+				
+				<!-- Sección "Tarifas" -->
+				<section id='seccion_tarifas' style="display:none">
 
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Tarifas
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Consulta la base de datos de tarifas y realiza las operaciones de actualización y asignación.
+						</p>
+					</div>
+					
+					
+					<form id="select_tarifas" method="post" action="">
+						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+						{% csrf_token %}
+						<input form="select_tarifas" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="2"
+						>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="tarifa">Filtrar por tarifa:</label>
+							<select form="select_tarifas" id="tarifa" name="tarifa" onchange="this.form.submit()">
+								<option value="">Todas</option>
+								{% for tarifa in tarifas %}
+								<option value="{{ tarifa.id }}" {% if tarifa.id|stringformat:"s" == request.POST.tarifa %}selected{% endif %}>
+									{{ tarifa.descripcion }}
+								</option>
+								{% endfor %}
+							</select>
+						</div>
+					</form>
+					
+					<div>
+						<table>
+							<tr>
+								<th colspan="4">
+									<h1 style="color:white;text-align: center;margin: 0px">
+										{%if request.POST.tarifa %}
+											{% for tarifa in tarifas %}
+												{% if tarifa.id|stringformat:"s" == request.POST.tarifa%}
+													Tarifa &#34;{{tarifa.descripcion}}&#34;
+												{% endif %}
+											{% endfor %}
+										{% else %}
+											Tarifas
+										{% endif %}
+									</h1>
+								</th>
+							</tr>
+							<tr>
+								<th>
+									ID
+								</th>
+								<th>
+									Descripción
+								</th>
+								<th>
+									Monto
+								</th>
+								<th>
+									Moneda
+								</th>
+							</tr>
+							{% if not tarifas %}
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							{% else %}
+								{% for tarifa in tarifas %}
+									<tr>
+										<td>{{tarifa.id}}</td>
+										<td>{{tarifa.descripcion}}</td>
+										<td>{{tarifa.precio}}</td>
+										<td>{{tarifa.moneda}}</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						</table>
+					</div>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							<a {% if request.POST.tarifa %}href="#" data-section="seccion_modifica_tarifa"{% endif %} class="red-button" >
+								<img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
+								<span class="text">Modificar</span>
+							</a>
+						</summary>
+					</details>
+
+				</section>
+				
+				<!-- Sección "Modificar Tarifas" -->
+				<section id='seccion_modifica_tarifa' style="display:none">
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Modificar tarifa
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Modifica los parámetros de las tarifas.
+						</p>
+					</div>
+					
+					
+					<form id="form_modifica_tarifa" method="post" action="">
+						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+						{% csrf_token %}
+						<input form="form_modifica_tarifa" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="3"
+						>
+						<input form="form_modifica_tarifa" type="hidden"
+								id="tarifa"
+								name="tarifa"
+								value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.id}}{% endif %}{% endfor %}"
+						>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="descripcion_tarifa">Descripción</label>
+							<input type="text" id="descripcion_tarifa" name="descripcion_tarifa" form="form_modifica_tarifa" placeholder="Agrega una descripción" value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.descripcion}}{% endif %}{% endfor %}" required>
+						</div>
+						<div class="nice-form-group" style="margin: 5%">	
+							<label for="precio_tarifa">Precio</label>
+							&#09;$ &#09;<input type="number" id="precio_tarifa" name="precio_tarifa" form="form_modifica_tarifa" step="0.01" placeholder="5.99" value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.precio}}{% endif %}{% endfor %}" required>
+						</div>
+						<div class="nice-form-group" style="margin: 5%">	
+							<label for="moneda_tarifa">Moneda</label>
+							<input type="text" id="moneda_tarifa" name="moneda_tarifa" form="form_modifica_tarifa" placeholder="MXN" value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.moneda}}{% endif %}{% endfor %}" required maxlength="3">
+						</div>
+					</form>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							<button type="submit" form="form_modifica_tarifa" style="min-width: fit-content" class="red-button">
+								Guardar cambios
+							</button>
+						</summary>
+					</details>
+
+				</section>
+				
 			</main>
-			
 			
 		</div>
 
@@ -97,7 +374,6 @@
 				alert(" {{ mensaje }} ");
 			</script>
 		{% endif %}
-
+		
 	</body>
 </html>
-

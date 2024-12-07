@@ -10,6 +10,12 @@ function validarFormulario(event) {
         const v_min = parseFloat(inputs[i].value);
         const v_ide = parseFloat(inputs[i + 1].value);
         const v_max = parseFloat(inputs[i + 2].value);
+	
+	if(v_min > 999.99 || v_min < 0){
+		isValid = false;
+		alert("Los datos superan los valores permitidos");
+		break;
+	}
 
         if (!(v_min < v_ide && v_ide < v_max)) {
             isValid = false;
@@ -106,10 +112,17 @@ function validarFormularioCreacion(event) {
         const v_ide = parseFloat(inputs[i + 1].value);
         const v_max = parseFloat(inputs[i + 2].value);
 
+        // Validar que los valores sean mayores de 0 y menores de 999.99
+        if (!(v_min > 0 && v_min < 999.99 && v_ide > 0 && v_ide < 999.99 && v_max > 0 && v_max < 999.99)) {
+            isValid = false;
+            alert(`Los valores en la fila ${Math.floor(i / 3) + 1} deben ser mayores de 0 y menores de 999.99`);
+            break; // Salir del bucle si hay un error
+        }
+
+        // Validar que v_min < v_ide < v_max
         if (!(v_min < v_ide && v_ide < v_max)) {
             isValid = false;
-            alert(`Los valores en la fila ${Math.floor(i / 3) + 1} no cumplen las condiciones:
-                Mínimo < Óptimo < Máximo`);
+            alert(`Los valores en la fila ${Math.floor(i / 3) + 1} no cumplen las condiciones: Mínimo < Óptimo < Máximo`);
             break; // Salir del bucle si hay un error
         }
     }
@@ -118,3 +131,23 @@ function validarFormularioCreacion(event) {
         form.submit(); // Enviar el formulario si todo es válido
     }
 }
+
+function handleFormSubmit(event, sectionId) {
+    event.preventDefault(); // Previene el comportamiento predeterminado del formulario
+
+    // Muestra la sección asociada
+    const showSection = (sectionId) => {
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => section.style.display = "none"); // Oculta todas las secciones
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = "block"; // Muestra la sección seleccionada
+        }
+    };
+
+    showSection(sectionId);
+
+    // Guarda la sección seleccionada en localStorage para persistirla
+    localStorage.setItem('lastSelectedSection', sectionId);
+}
+

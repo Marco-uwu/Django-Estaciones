@@ -214,9 +214,9 @@
 								</div>
 
 								<div class="nice-form-group" style="margin: 0px;">
-									<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_min }}" required>
-									<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_ide }}" required>
-									<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_max }}" required>
+									<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_min }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_min }}" min="0" max="999.99" required>
+									<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_ide }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_ide }}" min="0" max="999.99" required>
+									<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-parametros" step="0.01" placeholder="{{ parametro.valor_max }} {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="{{ parametro.valor_max }}" min="0" max="999.99" required>
 								</div>
 							{% endfor %}
 						</form>
