@@ -367,7 +367,7 @@
 						</div>
 						<div class="nice-form-group" style="margin: 5%">	
 							<label for="precio_tarifa">Precio</label>
-							&#09;$ &#09;<input type="number" id="precio_tarifa" name="precio_tarifa" form="form_modifica_tarifa" step="0.01" placeholder="5.99" value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.precio}}{% endif %}{% endfor %}" required>
+							&#09;$ &#09;<input type="number" id="precio_tarifa" name="precio_tarifa" form="form_modifica_tarifa" step="0.01" placeholder="5.99" value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.precio}}{% endif %}{% endfor %}" min="0" max="999.99" required>
 						</div>
 						<div class="nice-form-group" style="margin: 5%">	
 							<label for="moneda_tarifa">Moneda</label>
@@ -405,11 +405,6 @@
 							<img src="{% url 'grafica_mediciones' id_estacion=request.POST.id_estacion_grafica id_medicion=id_medicion_grafica fecha_inicio=request.POST.fecha_inicio_grafica fecha_fin=request.POST.fecha_fin_grafica %}" alt="Gráfica de Mediciones">
 						</div>
 						{% endfor %}
-					{% else %}
-						<script>
-							showSection('seccion_estadisticas')
-							localStorage.setItem('lastSelectedSection', 'seccion_estadisticas')
-						</script>
 					{% endif %}
 					
 				</section>

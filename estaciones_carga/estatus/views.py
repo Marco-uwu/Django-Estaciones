@@ -37,26 +37,39 @@ def estatus(request):
     estaciones = Estaciones.objects.all().values()
     resultado = ""
 
-    estacion_mediciones = request.GET.get('estacion_medicion', '')
-
-    if estacion_mediciones:
-        mediciones = Mediciones.objects.filter(id_estacion=estacion_mediciones).order_by('fecha')
-    else:
-        mediciones = Mediciones.objects.all().order_by('fecha')
-
-    # Configurar el paginador para 10 registros por página
-    paginator = Paginator(mediciones, 10)
+    mediciones = Mediciones.objects.all().order_by('id')
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
 
     if request.method == "POST":
-        nombre = request.POST.get("nombre_estacion")
-        direccion =  request.POST.get("dir_estacion")
-        try:
-            resultado = enviar_apagado_manual(direccion, nombre)
-        except Exception as e:
-            resultado = "Error al apagar " + nombre
+        tipo_formulario = request.POST.get('id_formulario')
+
+        # Ejecutar según tipo de solicitud
+        if tipo_formulario == "1": # Solicitud de filtrado de tabla
+
+            nombre = request.POST.get("nombre_estacion")
+            direccion =  request.POST.get("dir_estacion")
+            try:
+                resultado = enviar_apagado_manual(direccion, nombre)
+            except Exception as e:
+                resultado = "Error al apagar " + nombre
+        elif tipo_formulario == "2":
+            estacion_id = request.POST.get('estacion')
+            pagina = request.POST.get('pagina', None)
+            if estacion_id:
+                mediciones = Mediciones.objects.filter(id_estacion=estacion_id).order_by('id')
+            if pagina:
+                page_number = int(pagina)
+            else:
+                page_number = 1
+        else:
+            resultado = "Error en solicitud POST"
+    
+    
+    paginator = Paginator(mediciones, 10)
+    page_obj = paginator.get_page(page_number)
+
     context = {
+        'request' : request,
         'estaciones' : estaciones,
         'resultado' : resultado,
         'page_obj' : page_obj,

@@ -38,9 +38,11 @@ def grafica_mediciones_view(request, id_estacion, id_medicion, fecha_inicio, fec
 
     # Crear la gráfica
     ax.plot(fechas, valores)
+    
+    nombre_medicion = TiposMedicion.objects.values_list('descripcion', flat=True).get(id=id_medicion)
 
     # Configurar etiquetas y título
-    ax.set(xlabel='Fecha', ylabel='Valor', title='Mediciones')
+    ax.set(xlabel='Fecha', ylabel='Valor', title=nombre_medicion)
 
     # Rotar las etiquetas del eje X para mejor legibilidad
     plt.xticks(rotation=90)

@@ -1,4 +1,4 @@
-function validarFormulario(event) {
+function validarFormulario2(event) {
     event.preventDefault(); // Evitar el envío del formulario hasta que se valide
     
     const form = document.getElementById('form-parametros');
@@ -53,10 +53,10 @@ function filtrarRegla() {
     window.location.href = url.toString();
 }
 
-function validarFormularioCreacion(event) {
+function validarFormulario(nombre_form, event) {
     event.preventDefault(); // Evitar el envío del formulario hasta que se valide
 
-    const form = document.getElementById('form-creacion');
+    const form = document.getElementById(nombre_form);
     const inputs = form.querySelectorAll('.input-parametro');
     let isValid = true;
 

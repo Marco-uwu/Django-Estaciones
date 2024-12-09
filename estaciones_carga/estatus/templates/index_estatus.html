@@ -5,20 +5,20 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		
+
 		<title>Estaciones de Carga</title>
-		
+
 		<link rel="stylesheet" href="{% static 'css/index.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
 		<link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
-		
+
 		<script src="{% static 'js/scripts.js' %}"></script>
 	</head>
-	
+
 	<!-- BODY -->
 	<body>
-		
+
 		<!-- Encabezado -->
 		<section style="background-color: #FFFF;">
 			<div>
@@ -28,13 +28,13 @@
 				</h1>
 			</div>
 		</section>
-		
+
 		<!-- Contenido -->
 		<div class="demo-page" >
-			
+
 			<!-- Bloque de navegación -->
 			<div class="demo-page-navigation" >
-			
+
 				<nav>
 					<ul>
 						<li>
@@ -45,37 +45,38 @@
 						</li>
 					</ul>
 				</nav>
-				
+
 				<br>
-				
-                <nav>
-                    <ul>
-                        <li>
-                            <a href="#" data-section="seccion_estado">
-                                    <img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-                                    Estado
-                            </a>
-                        </li>
-                    </ul>
-					
+
+		<nav>
+			<ul>
+			<li>
+				<a href="#" data-section="seccion_estado">
+					<img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+					Estado
+				</a>
+			</li>
+			</ul>
+
 					<ul>
-                        <li>
-                            <a href="#" data-section="seccion_mediciones">
-                                <img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-                                Mediciones
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-				
+			<li>
+				<a href="#" data-section="seccion_mediciones">
+				<img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+				Mediciones
+				</a>
+			</li>
+			</ul>
+		</nav>
+
 			</div>
-			
+
 			<!-- Tablas de información -->
 			<main class="demo-page-content" style="width: 100%">
-			
+
+
 				<!-- Sección "Estado" -->
 				<section id='seccion_estado'>
-				
+
 					<div>
 						<h1 style="color:black;font-size:35px;text-align: center;">
 							Estado de estaciones
@@ -94,37 +95,42 @@
 								<th>Estado</th>
 								<th>Acción</th>
 							</tr>
-			
+
 							{% for estacion in estaciones %}
 								<form id="form-estacion-{{forloop.counter}}" method="POST" action="{% url 'estatus' %}">
-								
+
 									{% csrf_token %}
-									
+
 									<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
-									<input form="form-estacion-{{forloop.counter}}" type="hidden" 
-										id="dir_estacion" 
-										name="dir_estacion" 
+									<input form="form-estacion-{{forloop.counter}}" type="hidden"
+										id="id_formulario"
+										name="id_formulario"
+										value="1"
+									>
+									<input form="form-estacion-{{forloop.counter}}" type="hidden"
+										id="dir_estacion"
+										name="dir_estacion"
 										value="{{ estacion.dir_mac }}"
 									>
-									<input form="form-estacion-{{forloop.counter}}" type="hidden" 
-										id="nombre_estacion" 
-										name="nombre_estacion" 
+									<input form="form-estacion-{{forloop.counter}}" type="hidden"
+										id="nombre_estacion"
+										name="nombre_estacion"
 										value="{{ estacion.nombre }}"
 									>
-									
+
 									<!-- Fila de datos a mostrar por registro -->
 									<tr>
-									
+
 										<td>{{ estacion.id }}</td>
-										
+
 										<td>{{ estacion.nombre }}</td>
-										
-										<td style="text-align: center;"> 
-											<a href="{{ estacion.ubicacion }}"> 
-												Link 
-											</a> 
+
+										<td style="text-align: center;">
+											<a href="{{ estacion.ubicacion }}">
+												Link
+											</a>
 										</td>
-										
+
 										<td style="text-align: center;">
 											<p
 												class="
@@ -140,45 +146,45 @@
 												"
 												style="width:100%"
 											>
-												{{ estacion.estado }} 
+												{{ estacion.estado }}
 											</p>
 										</td>
-										
+
 										<td style="text-align: center;">
-											<input 
-												form="form-estacion-{{forloop.counter}}" 
-												type="submit" 
-												value="Apagar" 
+											<input
+												form="form-estacion-{{forloop.counter}}"
+												type="submit"
+												value="Apagar"
 												class="boton_no_disponible"
 												style="width:100%">
 											</input>
 										</td>
-									
+
 									</tr>
 								</form>
-			
+
 							{% endfor %}
-							
+
 						</table>
 					</div>
-					
+
 					{% if resultado %}
 						<script>
 							alert(" {{ resultado }} ");
 						</script>
 					{% endif %}
-					
+
 					<details>
 						<summary>
 							<p><br></p>
 						</summary>
 					</details>
-					
+
 				</section>
-				
+
 				<!-- Sección "Mediciones" -->
 				<section id="seccion_mediciones" style="display:none">
-				
+
 					<div>
 						<h1 style="color:black;font-size:35px;text-align: center;">
 							Mediciones
@@ -189,13 +195,27 @@
 					</div>
 
 					<div class="nice-form-group" >
-					
-						<select style="margin-left: 5%;margin-right: 5%; width: 90%" id="filtro-estacion" name="estacion_medicion" onchange="filtrarEstacion()">
-							<option value="" {% if not request.GET.estacion_medicion %}selected{% endif %}>Selecciona una estación</option>
-							{% for estacion in estaciones %}
-								<option value="{{estacion.id}}" {% if request.GET.estacion_medicion == estacion.id|stringformat:"s" %}selected{% endif %}>{{estacion.nombre}}</option>
-							{% endfor %}
-						</select>
+						
+						<form id="select_estaciones" method="post" action="">
+							<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+							{% csrf_token %}
+							<input form="select_estaciones" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="2"
+							>
+							<div class="nice-form-group" style="margin: 5%">
+								<label for="estacion">Filtrar por estación:</label>
+								<select form="select_estaciones" id="estacion" name="estacion" onchange="this.form.submit()">
+									<option value="">Todas</option>
+									{% for estacion in estaciones %}
+									<option value="{{ estacion.id }}" {% if estacion.id|stringformat:"s" == request.POST.estacion %}selected{% endif %}>
+										{{ estacion.nombre }}
+									</option>
+									{% endfor %}
+								</select>
+							</div>
+						</form>
 						
 						<table>
 							<tr>
@@ -216,57 +236,91 @@
 								<td></td>
 								<td></td>
 							</tr>
-						
+
 						{% else %}
 							{% for medicion in page_obj %}
-                                                        	<tr>
-                                                        	<td>{{ medicion.id }}</td>
-                                                        	<td>{{ medicion.fecha }}</td>
-                                                        	<td>{{ medicion.valor }}</td>
-                                                        	<td>{% if medicion.id_tipo_medicion.tipo_medicion == 'I' %} A {% elif medicion.id_tipo_medicion.tipo_medicion == 'T'%} °C {% else %} {{medicion.id_tipo_medicion.tipo_medicion}}{% endif %}</td>
-                                                        	<td>{{ medicion.id_tipo_medicion.descripcion }}</td>
-                                                        	</tr>
-                                                	{% endfor %}
+								<tr>
+								<td>{{ medicion.id }}</td>
+								<td>{{ medicion.fecha }}</td>
+								<td>{{ medicion.valor }}</td>
+								<td>{% if medicion.id_tipo_medicion.tipo_medicion == 'I' %} A {% elif medicion.id_tipo_medicion.tipo_medicion == 'T'%} °C {% else %} {{medicion.id_tipo_medicion.tipo_medicion}}{% endif %}</td>
+								<td>{{ medicion.id_tipo_medicion.descripcion }}</td>
+								</tr>
+							{% endfor %}
 						{% endif %}
 						</table>
 
 						<br>
 
 						<span class="current" >
-                <strong>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</strong>
-        </span>
-						
+		<strong>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</strong>
+	</span>
+
 					</div>
-					
+
 					<details>
 						<summary style="text-align: right;">
-							
-    <span>
+
 	
-        {% if page_obj.has_previous %}
-	<div style="display: inline-block;">
-            <a style="display: inline-block; min-width: fit-content;" class="red-button" href="?page=1">&laquo; Primera</a>
-            <a style="display: inline-block; min-width: fit-content;" class="red-button" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
-	</div>
-	{% endif %}
-        {% if page_obj.has_next %}
-	<div style="display: inline-block;">
-            <a style="display: inline-block; min-width: fit-content;" class="red-button" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
-            <a style="display: inline-block; min-width: fit-content;" class="red-button" href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
-        </div>
-        {% endif %}
-    </span>
+		{% if page_obj %}
+			
+				{% for valor in "12" %}
+					{% if page_obj.has_previous %}
+					<form id="boton_{% cycle 'primera' 'anterior'%}" method="post" action="">
+						{% csrf_token %}
+						<input type="hidden" name="id_formulario" value="2">
+						<input type="hidden" name="estacion" value="{{ request.POST.estacion }}">
+						<input type="hidden" name="pagina" value="{% cycle '1' page_obj.previous_page_number %}">
+					</form>
+					{% endif %}
+					
+					{% if page_obj.has_next %}
+					<form id="boton_{% cycle 'ultima' 'siguiente' %}" method="post" action="">
+						{% csrf_token %}
+						<input type="hidden" name="id_formulario" value="2">
+						<input type="hidden" name="estacion" value="{{ request.POST.estacion }}">
+						<input type="hidden" name="pagina" value="{% cycle page_obj.paginator.num_pages page_obj.next_page_number %}">
+					</form>
+					{% endif %}
+				{% endfor %}
+			<span>	
+				<div style="display: inline-block;">
+					{% for valor in "12" %}
+						{% if page_obj.has_previous %}
+						<input 
+							style="display: inline-block; min-width: fit-content;" 
+							class="red-button" 
+							type="submit" 
+							form="boton_{% cycle 'primera' 'anterior'%}" 
+							value="{% cycle '&laquo; Primera' 'Anterior'%}"
+						>
+						{% endif %}
+						{% if page_obj.has_next %}
+						<input 
+							style="display: inline-block; min-width: fit-content;" 
+							class="red-button" 
+							type="submit" 
+							form="boton_{% cycle 'ultima' 'siguiente'%}" 
+							value="{% cycle 'Última &raquo;' 'Siguiente'%}"
+						>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</span>
+		{% endif %}
+
+	
 						</summary>
 					</details>
-					
+
 				</section>
-				
+
 			</main>
-			
+
 		</div>
-		
+
 	</body>
-	
+
 </html>
 
 

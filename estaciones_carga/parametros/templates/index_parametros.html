@@ -39,7 +39,7 @@
 				<nav>
 					<ul>
 						<li>
-							<a href="{% url 'inicio' %}">
+							<a href="{% url 'inicio' %}" onclick="localStorage.setItem('lastSelectedSection', 'seccion_reglas')">
 								<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
 								Inicio
 							</a>
@@ -181,7 +181,7 @@
 							>
 						</form>
 
-						<form onsubmit="validarFormulario(event)" id="form-parametros" method="post">
+						<form onsubmit="validarFormulario('form-parametros', event)" id="form-parametros" method="post">
 							{% csrf_token %}
 							<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
 							<input form="form-parametros" type="hidden"
@@ -249,7 +249,7 @@
 
 					<div class="nice-form-group">
 
-						<form onsubmit="validarFormularioCreacion(event)" id="form-creacion" method="post">
+						<form onsubmit="validarFormulario('form-creacion' , event)" id="form-creacion" method="post">
 							{% csrf_token %}
 							<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
 							<input form="form-creacion" type="hidden"
@@ -289,9 +289,9 @@
 								</div>
 
 								<div class="nice-form-group" style="margin: 0px;">
-									<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="1.01" required>
-									<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="2.02" required>
-									<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="3.03" required>
+									<input type="number" id="v_min_{{forloop.counter}}" name="v_min_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="1.01" min="0" max="999.99" required>
+									<input type="number" id="v_ide_{{forloop.counter}}" name="v_ide_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="2.02" min="0" max="999.99" required>
+									<input type="number" id="v_max_{{forloop.counter}}" name="v_max_{{forloop.counter}}" form="form-creacion" step="0.01" placeholder="0.00 {% cycle 'V' 'V' 'V' 'V' 'V' 'A' 'A' '°C'%}" class ="input-parametro" value="3.03" min="0" max="999.99" required>
 								</div>
 							{% endfor %}
 						</form>
