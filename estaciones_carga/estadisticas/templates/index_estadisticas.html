@@ -39,7 +39,7 @@
 				<nav>
 					<ul>
 						<li>
-							<a href="{% url 'inicio' %}">
+							<a href="{% url 'inicio' %}" onclick="localStorage.setItem('lastSelectedSection', 'seccion_estadisticas')">
 								<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
 								Inicio
 							</a>
@@ -71,14 +71,6 @@
 							<a href="#" data-section="seccion_tarifas">
 								<img src="{% static 'icons/circle-dollar-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
 								Tarifas
-							</a>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<a href="#" data-section="seccion_modifica_tarifa">
-								<img src="{% static 'icons/circle-dollar-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-								Modifica Tarifas
 							</a>
 						</li>
 					</ul>
@@ -203,7 +195,7 @@
 								</tr>
 							{% else %}
 								{% for sesion in sesiones %}
-									<form id="grafica_sesion_{{sesion.id}}" method="post" action="">
+									<form id="grafica_sesion_{{sesion.id}}" method="post" action="" onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_graficas')">
 										<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
 										{% csrf_token %}
 										<input form="grafica_sesion_{{sesion.id}}" type="hidden"
@@ -217,9 +209,14 @@
 												value="{{sesion.id_estacion.id}}"
 										>
 										<input form="grafica_sesion_{{sesion.id}}" type="hidden"
-												id="id_sesion_grafica"
-												name="id_sesion_grafica"
-												value="{{sesion.id}}"
+												id="fecha_inicio_grafica"
+												name="fecha_inicio_grafica"
+												value="{{sesion.fecha_inicio|date:"Y-m-d H:i:s"}}"
+										>
+										<input form="grafica_sesion_{{sesion.id}}" type="hidden"
+												id="fecha_fin_grafica"
+												name="fecha_fin_grafica"
+												value="{{sesion.fecha_fin|date:"Y-m-d H:i:s"}}"
 										>
 									</form>
 									<tr>
@@ -227,7 +224,7 @@
 										<td>{{sesion.id_estacion.nombre}}</td>
 										<td>{{sesion.fecha_inicio}}</td>
 										<td>{{sesion.fecha_fin}}</td>
-										<td>{{sesion.id_estacion}}</td>
+										<td><input type="submit" value="Ver gráfica" form="grafica_sesion_{{sesion.id}}"></td>
 									</tr>
 								{% endfor %}
 							{% endif %}
@@ -351,7 +348,7 @@
 					</div>
 					
 					
-					<form id="form_modifica_tarifa" method="post" action="">
+					<form id="form_modifica_tarifa" method="post" action="" onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_tarifas')">
 						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
 						{% csrf_token %}
 						<input form="form_modifica_tarifa" type="hidden"
@@ -386,6 +383,35 @@
 						</summary>
 					</details>
 
+				</section>
+
+
+				<!-- Sección "Gráficas" -->
+				<section id='seccion_graficas'>
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Gráficas
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Analiza las gráficas correspondientes a cada medición de la sesión que seleccionaste.
+						</p>
+					</div>
+					
+					
+					{% if request.POST.id_formulario == '4' %}
+						{% for id_medicion_grafica in "123456789" %}
+						<div style="margin: 5%;">
+							<img src="{% url 'grafica_mediciones' id_estacion=request.POST.id_estacion_grafica id_medicion=id_medicion_grafica fecha_inicio=request.POST.fecha_inicio_grafica fecha_fin=request.POST.fecha_fin_grafica %}" alt="Gráfica de Mediciones">
+						</div>
+						{% endfor %}
+					{% else %}
+						<script>
+							showSection('seccion_estadisticas')
+							localStorage.setItem('lastSelectedSection', 'seccion_estadisticas')
+						</script>
+					{% endif %}
+					
 				</section>
 				
 			</main>

@@ -43,7 +43,7 @@ def grafica_mediciones_view(request, id_estacion, id_medicion, fecha_inicio, fec
     ax.set(xlabel='Fecha', ylabel='Valor', title='Mediciones')
 
     # Rotar las etiquetas del eje X para mejor legibilidad
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=90)
 
     # Crear un objeto de bytes para guardar la imagen
     buf = io.BytesIO()
