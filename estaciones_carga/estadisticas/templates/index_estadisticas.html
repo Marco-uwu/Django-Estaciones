@@ -162,7 +162,7 @@
 					<div>
 						<table>
 							<tr>
-								<th colspan="4">
+								<th colspan="5">
 									<h1 style="color:white;text-align: center;margin: 0px">
 										{%if request.POST.estacion %}
 											{% for estacion in estaciones %}
@@ -189,6 +189,9 @@
 								<th>
 									Fecha de fin
 								</th>
+								<th>
+									Acción
+								</th>
 							</tr>
 							{% if not sesiones %}
 								<tr>
@@ -196,14 +199,35 @@
 									<td></td>
 									<td></td>
 									<td></td>
+									<td></td>
 								</tr>
 							{% else %}
 								{% for sesion in sesiones %}
+									<form id="grafica_sesion_{{sesion.id}}" method="post" action="">
+										<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+										{% csrf_token %}
+										<input form="grafica_sesion_{{sesion.id}}" type="hidden"
+												id="id_formulario"
+												name="id_formulario"
+												value="4"
+										>
+										<input form="grafica_sesion_{{sesion.id}}" type="hidden"
+												id="id_estacion_grafica"
+												name="id_estacion_grafica"
+												value="{{sesion.id_estacion.id}}"
+										>
+										<input form="grafica_sesion_{{sesion.id}}" type="hidden"
+												id="id_sesion_grafica"
+												name="id_sesion_grafica"
+												value="{{sesion.id}}"
+										>
+									</form>
 									<tr>
 										<td>{{sesion.id}}</td>
 										<td>{{sesion.id_estacion.nombre}}</td>
 										<td>{{sesion.fecha_inicio}}</td>
 										<td>{{sesion.fecha_fin}}</td>
+										<td>{{sesion.id_estacion}}</td>
 									</tr>
 								{% endfor %}
 							{% endif %}
@@ -377,3 +401,4 @@
 		
 	</body>
 </html>
+

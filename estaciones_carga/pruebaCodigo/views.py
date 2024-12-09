@@ -21,12 +21,7 @@ def prueba(request):
             messages.error(request, resultado)
     return render(request, "prueba.html")
 
-def grafica_mediciones_view(request):
-    id_estacion = 4  
-    id_medicion = 9
-    fecha_inicio = '2024-12-05 16:08:06'
-    fecha_fin = '2024-12-05 16:08:45'
-
+def grafica_mediciones_view(request, id_estacion, id_medicion, fecha_inicio, fecha_fin):
     # Convertir las cadenas de fecha y hora a objetos datetime
     fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S')
     fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d %H:%M:%S')
@@ -52,12 +47,10 @@ def grafica_mediciones_view(request):
 
     # Crear un objeto de bytes para guardar la imagen
     buf = io.BytesIO()
-    fig.savefig(buf, format='png')
-    buf.seek(0)
+    canvas = FigureCanvas(fig)
+    canvas.print_png(buf)
 
-    # Convertir la imagen a base64
-    image_base64 = base64.b64encode(buf.read()).decode('utf-8')
-
-    # Pasar la imagen al contexto de la plantilla
-    context = {'image_base64': image_base64}
-    return render(request, 'prueba.html', context)
+    # Devolver la imagen como respuesta HTTP
+    response = HttpResponse(buf.getvalue(), content_type='image/png')
+    response['Content-Length'] = str(len(response.content))
+    return response
