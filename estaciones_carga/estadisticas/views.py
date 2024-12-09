@@ -8,6 +8,13 @@ import warnings
 import paho.mqtt.client as mqtt
 from .decorators import admin_required
 
+import matplotlib.pyplot as plt
+import io
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from datetime import datetime
+import pytz
+import base64
+
 @admin_required
 def estadisticas(request):
     template = loader.get_template('index_estadisticas.html')
@@ -17,6 +24,7 @@ def estadisticas(request):
     tarifas = Tarifas.objects.all().order_by('id')
     registro_tarifa = ""
     mensaje = ""
+    image_base64 = ""
 
     if request.method == "POST":
         # Verificar el tipo de formulario de la solicitud POST
@@ -39,6 +47,32 @@ def estadisticas(request):
             tarifa.moneda = request.POST.get('moneda_tarifa')
             tarifa.save()
             mensaje = "Cambios guardados correctamente!"
+        elif tipo_formulario == "4":
+            id_estacion_grafica = request.POST.get('id_estacion_grafica')
+            id_medicion_grafica = request.POST.get('id_medicion_grafica')
+            fecha_inicio_grafica = request.POST.get('fecha_inicio_grafica')
+            fecha_fin_grafica = request.POST.get('fecha_fin_grafica')
+
+
+            fecha_inicio_grafica = datetime.strptime(fecha_inicio_grafica, '%Y-%m-%d %H:%M:%S')
+            fecha_fin_grafica = datetime.strptime(fecha_fin_grafica, '%Y-%m-%d %H:%M:%S')
+            mediciones = Mediciones.objects.filter(id_estacion=id_estacion_grafica, fecha__range=[fecha_inicio_grafica, fecha_fin_grafica], id_tipo_medicion=id_medicion_grafica)
+
+            fechas = [medicion.fecha for medicion in mediciones]
+            valores = [medicion.valor for medicion in mediciones]
+
+            fig, ax = plt.subplots()
+            ax.plot(fechas, valores)
+            ax.set(xlabel='Fecha', ylabel='Valor', title='Mediciones')
+            plt.xticks(rotation=45)
+
+            # Crear un objeto de bytes para guardar la imagen
+            buf = io.BytesIO()
+            fig.savefig(buf, format='png')
+            buf.seek(0)
+
+            # Convertir la imagen a base64
+            image_base64 = base64.b64encode(buf.read()).decode('utf-8')
         else:
             mensaje = "Error: Solicitud POST inválida"
 
@@ -49,5 +83,6 @@ def estadisticas(request):
         'request' : request,
         'num_sesiones' : num_sesiones,
         'tarifas' : tarifas,
+        'grafica' : image_base64,
     }
     return HttpResponse(template.render(context, request))
