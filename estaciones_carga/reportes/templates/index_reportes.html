@@ -63,6 +63,30 @@
 							Analiza los reportes generados por mediciones fuera de límites.
 						</p>
 					</div>
+					
+					<form id="select_reportes" method="post" action="">
+						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+						{% csrf_token %}
+						<input form="select_reportes" type="hidden"
+							id="id_formulario"
+							name="id_formulario"
+							value="1"
+						>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="estacion">Filtrar por estación:</label>
+							<select form="select_reportes" id="estacion" name="estacion" onchange="this.form.submit()">
+								
+								<option value="">Todas</option>
+								
+								{% for estacion in estaciones %}
+									<option value="{{ estacion.id }}" {% if estacion.id|stringformat:"s" == request.POST.estacion %}selected{% endif %}>
+											{{ estacion.nombre }}
+									</option>
+								{% endfor %}
+								
+							</select>
+						</div>
+					</form>
 
 					<div class="nice-form-group" >
 						<table>
@@ -73,8 +97,8 @@
 								<th>Valor</th>
 								<th>Regla</th>
 							</tr>
-							{%if reportes%}
-								{%for reporte in reportes%}
+							{%if pagina_reportes%}
+								{%for reporte in pagina_reportes%}
 								<tr>
 									<td>{{reporte.id}}</td>
 									<td>{{reporte.id_medicion.fecha}}</td>
@@ -92,8 +116,15 @@
 								<td></td>
 							</tr>
 							{%endif%}
-
+							
 						</table>
+						
+						<br>
+						
+						<span>
+							Página {{ pagina_reportes.number }} de {{ pagina_reportes.paginator.num_pages }}.
+						</span>
+						
 					</div>
 
 					{% if resultado %}
@@ -104,7 +135,52 @@
 
 					<details>
 						<summary>
-							<p><br></p>
+							{% if pagina_reportes %}
+							
+								{% for valor in "12" %}
+									{% if pagina_reportes.has_previous %}
+									<form id="boton_{% cycle 'primera' 'anterior'%}" method="post" action="">
+										{% csrf_token %}
+										<input type="hidden" name="id_formulario" value="1">
+										<input type="hidden" name="estacion" value="{{ request.POST.estacion }}">
+										<input type="hidden" name="pagina" value="{% cycle '1' pagina_reportes.previous_page_number %}">
+									</form>
+									{% endif %}
+
+									{% if pagina_reportes.has_next %}
+									<form id="boton_{% cycle 'ultima' 'siguiente' %}" method="post" action="">
+										{% csrf_token %}
+										<input type="hidden" name="id_formulario" value="1">
+										<input type="hidden" name="estacion" value="{{ request.POST.estacion }}">
+										<input type="hidden" name="pagina" value="{% cycle pagina_reportes.paginator.num_pages pagina_reportes.next_page_number %}">
+									</form>
+									{% endif %}
+								{% endfor %}
+								<span>
+									<div style="display: flex; align-items: center;"> 
+										{% for valor in "12" %}
+											{% if pagina_reportes.has_previous %}
+												<input 
+													style="margin-right: 5px; min-width: fit-content;" 
+													class="red-button" 
+													type="submit" 
+													form="boton_{% cycle 'primera' 'anterior'%}" 
+													value="{% cycle '&laquo; Primera' 'Anterior'%}" 
+												>
+											{% endif %}
+											{% if pagina_reportes.has_next %}
+												<input 
+													style="margin-right: 5px; min-width: fit-content;" 
+													class="red-button" 
+													type="submit" 
+													form="boton_{% cycle 'ultima' 'siguiente'%}" 
+													value="{% cycle 'Última &raquo;' 'Siguiente'%}" 
+												>
+											{% endif %}
+										{% endfor %}
+									</div>
+								</span>
+							{% endif %}
 						</summary>
 					</details>
 					
