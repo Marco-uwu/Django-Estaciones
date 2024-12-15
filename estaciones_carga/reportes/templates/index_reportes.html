@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+	<!-- HEAD -->
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Estaciones de Carga</title>
+
+		<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/estilos_inicio.css' %}" />
+		<link rel="icon" href="{% static 'icons/circle-water-plug-svgrepo-com.svg' %}" type="image/svg+xml">
+
+		<script src="{% static 'js/scripts.js' %}"></script>
+	</head>
+
+	<!-- BODY -->
+	<body>
+
+		<!-- Encabezado -->
+		<section style="background-color: #FFFF;">
+			<div>
+				<h1 class="centered-title">
+					<img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
+					Estaciones de Carga
+				</h1>
+			</div>
+		</section>
+
+		<!-- Contenido -->
+		<div class="demo-page" >
+
+			<!-- Bloque de navegación -->
+			<div class="demo-page-navigation" >
+
+				<nav>
+					<ul>
+						<li>
+							<a href="{% url 'inicio' %}">
+								<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Inicio
+							</a>
+						</li>
+					</ul>
+				</nav>
+				
+			</div>
+
+			<!-- Contenedor de Secciones -->
+			<main class="demo-page-content" style="width: 100%">
+
+
+				<!-- Sección "Reportes" -->
+				<section id='seccion_reportes'>
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Reportes
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Analiza los reportes generados por mediciones fuera de límites.
+						</p>
+					</div>
+
+					<div class="nice-form-group" >
+						<table>
+							<tr>
+								<th>ID</th>
+								<th>Fecha</th>
+								<th>Estación</th>
+								<th>Valor</th>
+								<th>Regla</th>
+							</tr>
+							{%if reportes%}
+								{%for reporte in reportes%}
+								<tr>
+									<td>{{reporte.id}}</td>
+									<td>{{reporte.id_medicion.fecha}}</td>
+									<td>{{reporte.id_medicion.id_estacion.nombre}}</td>
+									<td>{{reporte.id_medicion.valor}}</td>
+									<td>{{reporte.id_medicion.id_estacion.id_regla.nombre}}</td>
+								</tr>
+								{%endfor%}
+							{%else%}
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							{%endif%}
+
+						</table>
+					</div>
+
+					{% if resultado %}
+						<script>
+							alert(" {{ resultado }} ");
+						</script>
+					{% endif %}
+
+					<details>
+						<summary>
+							<p><br></p>
+						</summary>
+					</details>
+					
+				</section>
+				
+				
+			</main>
+			
+		</div>
+		
+	</body>
+
+</html>
+
+
+
