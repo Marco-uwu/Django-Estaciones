@@ -20,14 +20,14 @@
 	<body>
 
 		<!-- Encabezado -->
-		<section style="background-color: #FFFF;">
+		<div class="encabezado">
 			<div>
 				<h1 class="centered-title">
 					<img src="{% static 'icons/battery-bolt-svgrepo-com.svg' %}" width="55" height="55" style="margin-right: 16px;">
 					Estaciones de Carga
 				</h1>
 			</div>
-		</section>
+		</div>
 
 		<!-- Contenido -->
 		<div class="demo-page" >
@@ -48,25 +48,25 @@
 
 				<br>
 
-		<nav>
-			<ul>
-			<li>
-				<a href="#" data-section="seccion_estado">
-					<img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-					Estado
-				</a>
-			</li>
-			</ul>
-
+				<nav style="top: 7em;">
 					<ul>
-			<li>
-				<a href="#" data-section="seccion_mediciones">
-				<img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-				Mediciones
-				</a>
-			</li>
-			</ul>
-		</nav>
+					<li>
+						<a href="#" data-section="seccion_estado">
+							<img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+							Estado
+						</a>
+					</li>
+					</ul>
+
+							<ul>
+					<li>
+						<a href="#" data-section="seccion_mediciones">
+						<img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+						Mediciones
+						</a>
+					</li>
+					</ul>
+				</nav>
 
 			</div>
 
@@ -81,7 +81,7 @@
 						<h1 style="color:black;font-size:35px;text-align: center;">
 							Estado de estaciones
 						</h1>
-						<p style="font-size:17px;text-align: left;margin: 30px;">
+						<p style="font-size:17px;text-align: justify;margin: 30px;">
 							Gestiona tus estaciones de forma sencilla: monitorea su funcionamiento y actívalas o desactívalas con un clic.
 						</p>
 					</div>
@@ -195,7 +195,7 @@
 					</div>
 
 					<div class="nice-form-group" >
-						
+
 						<form id="select_estaciones" method="post" action="">
 							<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
 							{% csrf_token %}
@@ -216,7 +216,7 @@
 								</select>
 							</div>
 						</form>
-						
+
 						<table>
 							<tr>
 								<th colspan="5" id="encabezado_mediciones"> {% if not request.GET.estacion_medicion %}Selecciona una estación{% else %} {% for estacion in estaciones %} {% if request.GET.estacion_medicion == estacion.id|stringformat:"s" %} {{estacion.nombre}} {%endif%} {% endfor %}{% endif %} </th>
@@ -253,72 +253,73 @@
 						<br>
 
 						<span class="current" >
-		<strong>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</strong>
-	</span>
-
+							<strong>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</strong>
+						</span>
+						
 					</div>
 
 					<details>
 						<summary style="text-align: right;">
+							
+							{% if page_obj %}
 
-	
-		{% if page_obj %}
-			
-				{% for valor in "12" %}
-					{% if page_obj.has_previous %}
-					<form id="boton_{% cycle 'primera' 'anterior'%}" method="post" action="">
-						{% csrf_token %}
-						<input type="hidden" name="id_formulario" value="2">
-						<input type="hidden" name="estacion" value="{{ request.POST.estacion }}">
-						<input type="hidden" name="pagina" value="{% cycle '1' page_obj.previous_page_number %}">
-					</form>
-					{% endif %}
-					
-					{% if page_obj.has_next %}
-					<form id="boton_{% cycle 'ultima' 'siguiente' %}" method="post" action="">
-						{% csrf_token %}
-						<input type="hidden" name="id_formulario" value="2">
-						<input type="hidden" name="estacion" value="{{ request.POST.estacion }}">
-						<input type="hidden" name="pagina" value="{% cycle page_obj.paginator.num_pages page_obj.next_page_number %}">
-					</form>
-					{% endif %}
-				{% endfor %}
-			<span>	
-				<div style="display: inline-block;">
-					{% for valor in "12" %}
-						{% if page_obj.has_previous %}
-						<input 
-							style="display: inline-block; min-width: fit-content;" 
-							class="red-button" 
-							type="submit" 
-							form="boton_{% cycle 'primera' 'anterior'%}" 
-							value="{% cycle '&laquo; Primera' 'Anterior'%}"
-						>
-						{% endif %}
-						{% if page_obj.has_next %}
-						<input 
-							style="display: inline-block; min-width: fit-content;" 
-							class="red-button" 
-							type="submit" 
-							form="boton_{% cycle 'ultima' 'siguiente'%}" 
-							value="{% cycle 'Última &raquo;' 'Siguiente'%}"
-						>
-						{% endif %}
-					{% endfor %}
-				</div>
-			</span>
-		{% endif %}
+								{% for valor in "12" %}
+										{% if page_obj.has_previous %}
+										<form id="boton_{% cycle 'primera' 'anterior'%}" method="post" action="">
+											{% csrf_token %}
+											<input type="hidden" name="id_formulario" value="2">
+											<input type="hidden" name="estacion" value="{{ request.POST.estacion }}">
+											<input type="hidden" name="pagina" value="{% cycle '1' page_obj.previous_page_number %}">
+										</form>
+										{% endif %}
 
-	
+										{% if page_obj.has_next %}
+										<form id="boton_{% cycle 'ultima' 'siguiente' %}" method="post" action="">
+											{% csrf_token %}
+											<input type="hidden" name="id_formulario" value="2">
+											<input type="hidden" name="estacion" value="{{ request.POST.estacion }}">
+											<input type="hidden" name="pagina" value="{% cycle page_obj.paginator.num_pages page_obj.next_page_number %}">
+										</form>
+										{% endif %}
+								{% endfor %}
+								
+								<span>
+									<div style="display: flex; align-items: center;">
+										{% for valor in "12" %}
+											{% if page_obj.has_previous %}
+												<input
+													style="margin-right: 5px; min-width: fit-content;"
+													class="red-button"
+													type="submit"
+													form="boton_{% cycle 'primera' 'anterior'%}"
+													value="{% cycle '&laquo; Primera' 'Anterior'%}"
+												>
+											{% endif %}
+											{% if page_obj.has_next %}
+												<input
+													style="margin-right: 5px; min-width: fit-content;"
+													class="red-button"
+													type="submit"
+													form="boton_{% cycle 'ultima' 'siguiente'%}"
+													value="{% cycle 'Última &raquo;' 'Siguiente'%}"
+												>
+											{% endif %}
+										{% endfor %}
+									</div>
+								</span>
+							{% else %}
+								<br>
+							{% endif %}
+							
 						</summary>
 					</details>
-
+					
 				</section>
-
+				
 			</main>
-
+			
 		</div>
-
+		
 	</body>
 
 </html>

@@ -73,3 +73,8 @@
     cursor: not-allowed;
     pointer-events: none; /* Evita que se dispare cualquier evento */
 }
+
+.encabezado {
+    background-color: #FFFF; 
+    height: 8em;
+}
