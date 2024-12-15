@@ -50,27 +50,38 @@
 
 				<nav style="top: 7em;">
 					<ul>
-					<li>
-						<a href="#" data-section="seccion_estado">
-							<img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-							Estado
-						</a>
-					</li>
+						<li>
+							<a href="#" data-section="seccion_estado">
+								<img src="{% static 'icons/circle-dashed-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Estado
+							</a>
+						</li>
 					</ul>
 
-							<ul>
-					<li>
-						<a href="#" data-section="seccion_mediciones">
-						<img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
-						Mediciones
-						</a>
-					</li>
+					<ul>
+						<li>
+							<a href="#" data-section="seccion_mediciones">
+								<img src="{% static 'icons/circle-dots-vertical-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Mediciones
+							</a>
+						</li>
+					</ul>
+					
+					<ul>
+						<li>
+							<a href="#" data-section="seccion_nueva_estacion">
+								<img src="{% static 'icons/circle-plus-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Nueva estación
+							</a>
+						</li>
 					</ul>
 				</nav>
 
 			</div>
-
-			<!-- Tablas de información -->
+			
+			<!-- ----------------------- -->
+			<!-- Contenedor de Secciones -->
+			<!-- ----------------------- -->
 			<main class="demo-page-content" style="width: 100%">
 
 
@@ -126,7 +137,7 @@
 										<td>{{ estacion.nombre }}</td>
 
 										<td style="text-align: center;">
-											<a href="{{ estacion.ubicacion }}">
+											<a {%if estacion.ubicacion%}href="{{ estacion.ubicacion }}"{%endif%}>
 												Link
 											</a>
 										</td>
@@ -181,6 +192,7 @@
 					</details>
 
 				</section>
+				
 
 				<!-- Sección "Mediciones" -->
 				<section id="seccion_mediciones" style="display:none">
@@ -314,6 +326,65 @@
 						</summary>
 					</details>
 					
+				</section>
+				
+				
+				<!-- Sección "Nueva Estacion" -->
+				<section id='seccion_nueva_estacion' style="display:none">
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Nueva estación
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Crea una estación nueva.
+						</p>
+					</div>
+
+					<div class="nice-form-group">
+
+						<form  id="form-creacion" method="post">
+							{% csrf_token %}
+							<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+							<input form="form-creacion" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="3"
+							>
+
+							<div class="nice-form-group" style="margin-top: 15px;margin-right: 15px;margin-bottom: 30px;margin-left: 15px;">
+								<div class="nice-form-group" style="margin-bottom: 15px;">
+									<h1>
+										Nombre de estación
+									</h1>
+									<small>
+										Asigna un nombre para identificar tu nueva estación.
+									</small>
+								</div>
+								<input form="form-creacion" id="nombre_nueva_estacion" name="nombre_nueva_estacion" type="text" placeholder="Nombre de nueva estación" value="" required>
+							</div>
+							
+							<div class="nice-form-group" style="margin-top: 15px;margin-right: 15px;margin-bottom: 30px;margin-left: 15px;">
+								<div class="nice-form-group" style="margin-bottom: 15px;">
+									<h1>
+										Dirección física
+									</h1>
+									<small>
+										Ingresa la dirección física de la Raspberry PI 4 correspondiente a la estación.
+									</small>
+								</div>
+								<input form="form-creacion" id="dir_nueva_estacion" name="dir_nueva_estacion" type="text" placeholder="00:00:00:00:00:00" value="" required minlength="17" maxlength="17">
+							</div>
+							
+						</form>
+					</div>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+
+							<input type="submit" value="+ Crear" form="form-creacion" class="red-button">
+							
+						</summary>
+					</details>
 				</section>
 				
 			</main>
