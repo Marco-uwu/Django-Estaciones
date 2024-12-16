@@ -15,6 +15,8 @@ from datetime import datetime
 import pytz
 import base64
 
+from reportlab.pdfgen import canvas
+
 @admin_required
 def estadisticas(request):
     template = loader.get_template('index_estadisticas.html')
@@ -60,3 +62,80 @@ def estadisticas(request):
         'tarifas' : tarifas,
     }
     return HttpResponse(template.render(context, request))
+
+def generar_pdf(request):
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        dato_id = request.POST.get('id_sesion_recibo')
+        dato = SesionesCarga.objects.get(id=dato_id)
+        fecha_actual = datetime.now().strftime("%d-%m-%Y %H:%M")
+        tiempo_total = (dato.fecha_fin - dato.fecha_inicio)
+        segundos_totales = tiempo_total.total_seconds()
+        tiempo_decimal = segundos_totales / 3600
+        horas, resto = divmod(int(segundos_totales), 3600)
+        minutos, segundos = divmod(resto, 60)
+        
+        mediciones_potencia = Mediciones.objects.filter(id_estacion=dato.id_estacion.id, fecha__range=[dato.fecha_inicio, dato.fecha_fin], id_tipo_medicion=9)
+        
+        precio_total = ((float(mediciones_potencia[0].valor) * tiempo_decimal)/1000) * float(dato.id_estacion.id_tarifa.precio)
+        precio_total = round(precio_total, 2)
+
+        # Crear un objeto HttpResponse con el tipo de contenido PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="reporte.pdf"'
+
+        # Crear un objeto canvas
+        p = canvas.Canvas(response)
+        
+        p.drawString(50, 800, f"------------------------------------------------------------------------------------------------------------------")
+        p.drawString(50, 775, f"|                                              ESTACIONES DE CARGA                                              |")
+        p.drawString(50, 750, f"------------------------------------------------------------------------------------------------------------------")
+        p.drawString(50, 790, f"|                                                                                                                                       |")
+        p.drawString(50, 760, f"|                                                                                                                                       |")
+        # Coordenada inicial
+        x = 100
+        y = 725
+
+        # Escribir datos en el PDF
+        p.drawString(x, y, f"Fecha: {fecha_actual}")
+        y -= 40
+        p.drawString(x, y, f"ID Estacion:")
+        y -= 20
+        p.drawString(x, y, f"Estacion:")
+        y -= 20
+        p.drawString(x, y, f"Tarifa por kWh:")
+        y -= 40
+        p.drawString(x, y, f"Hora de inicio:")
+        y -= 20
+        p.drawString(x, y, f"Hora de fin:")
+        y -= 20
+        p.drawString(x, y, f"Tiempo total de carga:")
+        y -= 20
+        p.drawString(50, y, f"------------------------------------------------------------------------------------------------------------------")
+        y -= 20
+        p.drawString(x, y, f"TOTAL:")
+        
+        x = 250
+        y = 725
+        p.drawString(x, y, "")
+        y -= 40
+        p.drawString(x, y, f"{dato.id_estacion.id}")
+        y -= 20
+        p.drawString(x, y, f"\"{dato.id_estacion.nombre}\"")
+        y -= 20
+        p.drawString(x, y, f"$ {dato.id_estacion.id_tarifa.precio} {dato.id_estacion.id_tarifa.moneda}")
+        y -= 40
+        p.drawString(x, y, f"{dato.fecha_inicio}")
+        y -= 20
+        p.drawString(x, y, f"{dato.fecha_fin}")
+        y -= 20
+        p.drawString(x, y, f"{horas:02}:{minutos:02}:{segundos:02}")
+        y -= 40
+        p.drawString(x, y, f"$ {precio_total} {dato.id_estacion.id_tarifa.moneda} ")
+
+        # Finalizar el PDF
+        p.showPage()
+        p.save()
+        return response
+    else:
+        return HttpResponseBadRequest("<h1>400 Bad Response</h1><p>Verifica tu solicitud</p>")

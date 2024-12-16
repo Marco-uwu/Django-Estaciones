@@ -93,7 +93,7 @@
 							Analiza el resumen de datos estadísticos de todas las estaciones de la red.
 						</p>
 					</div>
-					
+
 					<div>
 						<table>
 							<tr>
@@ -108,15 +108,15 @@
 
 						</table>
 					</div>
-					
+
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
 							<br>
 						</summary>
 					</details>
-					
+
 				</section>
-				
+
 				<!-- Sección "Sesiones de Carga" -->
 				<section id='seccion_sesiones' style="display:none">
 
@@ -128,8 +128,8 @@
 							Analiza el registro de sesiones de carga de las estaciones, filtrando por la estación de tu interés.
 						</p>
 					</div>
-					
-					
+
+
 					<form id="select_sesiones" method="post" action="">
 						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
 						{% csrf_token %}
@@ -150,11 +150,11 @@
 							</select>
 						</div>
 					</form>
-					
+
 					<div>
 						<table>
 							<tr>
-								<th colspan="5">
+								<th colspan="6">
 									<h1 style="color:white;text-align: center;margin: 0px">
 										{%if request.POST.estacion %}
 											{% for estacion in estaciones %}
@@ -182,7 +182,10 @@
 									Fecha de fin
 								</th>
 								<th>
-									Acción
+									Gráficas
+								</th>
+								<th>
+									Recibo
 								</th>
 							</tr>
 							{% if not sesiones %}
@@ -219,12 +222,24 @@
 												value="{{sesion.fecha_fin|date:"Y-m-d H:i:s"}}"
 										>
 									</form>
+									
+									<form id="recibo_sesion_{{sesion.id}}" method="post" action="{% url 'generar_pdf' %}" onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_sesiones')">
+										<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+										{% csrf_token %}
+										<input form="recibo_sesion_{{sesion.id}}" type="hidden"
+											id="id_sesion_recibo"
+											name="id_sesion_recibo"
+											value="{{sesion.id}}"
+										>
+									</form>
+									
 									<tr>
 										<td>{{sesion.id}}</td>
 										<td>{{sesion.id_estacion.nombre}}</td>
 										<td>{{sesion.fecha_inicio}}</td>
 										<td>{{sesion.fecha_fin}}</td>
-										<td><input class="red-button" style="min-width: fit-content;" type="submit" value="Ver gráfica" form="grafica_sesion_{{sesion.id}}"></td>
+										<td><input class="red-button" style="min-width: fit-content;" type="submit" value="Ver" form="grafica_sesion_{{sesion.id}}"></td>
+										<td><input class="red-button" style="min-width: fit-content;" type="submit" value="PDF" form="recibo_sesion_{{sesion.id}}"></td>
 									</tr>
 								{% endfor %}
 							{% endif %}
@@ -238,7 +253,7 @@
 					</details>
 
 				</section>
-				
+
 				<!-- Sección "Tarifas" -->
 				<section id='seccion_tarifas' style="display:none">
 
@@ -250,8 +265,8 @@
 							Consulta la base de datos de tarifas y realiza las operaciones de actualización y asignación.
 						</p>
 					</div>
-					
-					
+
+
 					<form id="select_tarifas" method="post" action="">
 						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
 						{% csrf_token %}
@@ -272,7 +287,7 @@
 							</select>
 						</div>
 					</form>
-					
+
 					<div>
 						<table>
 							<tr>
@@ -334,7 +349,7 @@
 					</details>
 
 				</section>
-				
+
 				<!-- Sección "Modificar Tarifas" -->
 				<section id='seccion_modifica_tarifa' style="display:none">
 
@@ -346,8 +361,8 @@
 							Modifica los parámetros de las tarifas.
 						</p>
 					</div>
-					
-					
+
+
 					<form id="form_modifica_tarifa" method="post" action="" onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_tarifas')">
 						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
 						{% csrf_token %}
@@ -365,11 +380,11 @@
 							<label for="descripcion_tarifa">Descripción</label>
 							<input type="text" id="descripcion_tarifa" name="descripcion_tarifa" form="form_modifica_tarifa" placeholder="Agrega una descripción" value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.descripcion}}{% endif %}{% endfor %}" required>
 						</div>
-						<div class="nice-form-group" style="margin: 5%">	
+						<div class="nice-form-group" style="margin: 5%">
 							<label for="precio_tarifa">Precio</label>
 							&#09;$ &#09;<input type="number" id="precio_tarifa" name="precio_tarifa" form="form_modifica_tarifa" step="0.01" placeholder="5.99" value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.precio}}{% endif %}{% endfor %}" min="0" max="999.99" required>
 						</div>
-						<div class="nice-form-group" style="margin: 5%">	
+						<div class="nice-form-group" style="margin: 5%">
 							<label for="moneda_tarifa">Moneda</label>
 							<input type="text" id="moneda_tarifa" name="moneda_tarifa" form="form_modifica_tarifa" placeholder="MXN" value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.moneda}}{% endif %}{% endfor %}" required maxlength="3">
 						</div>
@@ -397,8 +412,8 @@
 							Analiza las gráficas correspondientes a cada medición de la sesión que seleccionaste.
 						</p>
 					</div>
-					
-					
+
+
 					{% if request.POST.id_formulario == '4' %}
 						{% for id_medicion_grafica in "123456789" %}
 						<div style="margin: 5%;">
@@ -406,11 +421,11 @@
 						</div>
 						{% endfor %}
 					{% endif %}
-					
+
 				</section>
-				
+
 			</main>
-			
+
 		</div>
 
 
@@ -419,7 +434,6 @@
 				alert(" {{ mensaje }} ");
 			</script>
 		{% endif %}
-		
+
 	</body>
 </html>
-
