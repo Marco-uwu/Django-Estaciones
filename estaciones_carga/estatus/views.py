@@ -145,6 +145,14 @@ def estatus(request):
                         resultado = f"Error: La dirección MAC no está en el formato solicitado. Use 00:11:22:33:44:55."
             except IntegrityError:
                 resultado = "Ocurrió un error al intentar actualizar la estación."
+        elif tipo_formulario == "6":
+            id_estacion_eliminar = request.POST.get('id_estacion_eliminar')
+            try:
+                estacion_eliminar = Estaciones.objects.get(id=id_estacion_eliminar)
+                estacion_eliminar.delete()
+                resultado = "Estacion eliminada exitosamente"
+            except IntegrityError:
+                resultado = "Ocurrió un error al tratar de eliminar la Estación. Verifica que no tenga mediciones."
         else:
             resultado = "Error en solicitud POST"
     

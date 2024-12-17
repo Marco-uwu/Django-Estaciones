@@ -67,6 +67,14 @@ def estadisticas(request):
                     mensaje = "Tarifa creada exitosamente!"
             except IntegrityError:
                 mensaje = "Ocurrió un error al crear la tarifa."
+        elif tipo_formulario == "6":
+            id_tarifa_eliminar = request.POST.get('id_tarifa_eliminar')
+            try:
+                tarifa = Tarifas.objects.get(id=id_tarifa_eliminar)
+                tarifa.delete()
+                mensaje = "Tarifa eliminada exitosamente"
+            except IntegrityError:
+                mensaje = "Ocurrió un error al tratar de eliminar la tarifa, verifica que no esté asignada a una estación."
         else:
             mensaje = "Error: Solicitud POST inválida"
 

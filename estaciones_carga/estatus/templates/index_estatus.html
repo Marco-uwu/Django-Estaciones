@@ -188,8 +188,8 @@
 					</details>
 
 				</section>
-				
-				
+
+
 				<!-- Sección "Modificar estaciones" -->
 				<section id='seccion_modificar' style="display:none">
 
@@ -286,9 +286,9 @@
 							</a>
 						</summary>
 					</details>
-					
+
 				</section>
-				
+
 				<!-- Sección "Modificar Estacion" -->
 				<section id='seccion_modifica_estacion' style="display:none">
 
@@ -356,9 +356,27 @@
 							</select>
 						</div>
 					</form>
+					
+					<form onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_tarifas')" id="form-eliminar" method="post">
+						{% csrf_token %}
+						<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+						<input form="form-eliminar" type="hidden"
+							id="id_formulario"
+							name="id_formulario"
+							value="6"
+						>
+						<input form="form-eliminar" type="hidden"
+							id="id_estacion_eliminar"
+							name="id_estacion_eliminar"
+							value="{{request.POST.id_estacion}}"
+						>
+					</form>
 
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
+							<button type="submit" form="form-eliminar" style="min-width: fit-content;margin-right: 10px;background-color: #D63A13;border: 2px solid #B91311;" class="red-button">
+								Eliminar
+							</button>
 							<button type="submit" form="form_modifica_estacion" style="min-width: fit-content" class="red-button">
 								Guardar cambios
 							</button>
@@ -560,7 +578,7 @@
 						</summary>
 					</details>
 				</section>
-				
+
 				{% if resultado %}
 					<script>
 						alert(" {{ resultado }} ");

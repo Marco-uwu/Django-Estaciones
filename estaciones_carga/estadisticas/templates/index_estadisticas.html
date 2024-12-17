@@ -400,6 +400,9 @@
 
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
+							<button type="submit" form="form-eliminar" style="min-width: fit-content;margin-right: 10px;background-color: #D63A13;border: 2px solid #B91311;" class="red-button">
+								Eliminar
+							</button>
 							<button type="submit" form="form_modifica_tarifa" style="min-width: fit-content" class="red-button">
 								Guardar cambios
 							</button>
@@ -408,7 +411,7 @@
 
 				</section>
 				
-				<!-- Sección "Modificar Tarifas" -->
+				<!-- Sección "Nueva Tarifa" -->
 				<section id='seccion_nueva_tarifa' style="display:none">
 
 					<div>
@@ -447,6 +450,21 @@
 							<input type="text" id="moneda_tarifa" name="moneda_tarifa" form="form_nueva_tarifa" placeholder="MXN" value="" required minlength="3" maxlength="3">
 						</div>
 					</form>
+					
+					<form onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_tarifas')" id="form-eliminar" method="post">
+						{% csrf_token %}
+						<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+						<input form="form-eliminar" type="hidden"
+							id="id_formulario"
+							name="id_formulario"
+							value="6"
+						>
+						<input form="form-eliminar" type="hidden"
+							id="id_tarifa_eliminar"
+							name="id_tarifa_eliminar"
+							value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:'s' == request.POST.tarifa %}{{tarifa.id}}{% endif %}{% endfor %}"
+						>
+					</form>
 
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
@@ -460,7 +478,7 @@
 
 
 				<!-- Sección "Gráficas" -->
-				<section id='seccion_graficas'>
+				<section id='seccion_graficas'style="display:none">
 
 					<div>
 						<h1 style="color:black;font-size:35px;text-align: center;">
