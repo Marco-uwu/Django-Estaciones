@@ -55,6 +55,9 @@ def estatus(request):
 
     mediciones = Mediciones.objects.all().order_by('id')
     page_number = request.GET.get('page')
+    
+    tarifas = Tarifas.objects.all().order_by('id')
+    reglas = ReglasMedicion.objects.all().order_by('id')
 
     if request.method == "POST":
         tipo_formulario = request.POST.get('id_formulario')
@@ -102,6 +105,46 @@ def estatus(request):
                     resultado = "Ocurrió un error al intentar insertar la estación."
             else:
                 resultado = "Error: La dirección MAC no está en el formato solicitado. Use 00:11:22:33:44:55."
+        elif tipo_formulario == "4":
+            id_estacion_modificar = int(request.POST.get('id_estacion'))
+            registro_estacion = Estaciones.objects.get(pk=id_estacion_modificar)
+            #resultado = str(registro_estacion.nombre)
+        elif tipo_formulario == "5":
+            mac_existe = None
+            id_regla_form = request.POST.get('nueva_regla')
+            id_tarifa_form = request.POST.get('nueva_tarifa')
+            id_estacion_form = request.POST.get('id_estacion_modificar')
+            dir_estacion_form = request.POST.get('nueva_direccion', None)
+            if dir_estacion_form is not "":
+                nueva_dir = procesar_mac(dir_estacion_form)
+
+            try:
+                with transaction.atomic():
+                    id_regla_instancia = ReglasMedicion.objects.get(pk=id_regla_form)
+                    id_tarifa_instancia = Tarifas.objects.get(pk=id_tarifa_form)
+                            
+                    estacion = Estaciones.objects.get(pk=id_estacion_form)
+
+                    estacion.nombre = request.POST.get('nuevo_nombre_estacion')
+                    estacion.ubicacion = request.POST.get('nueva_ubicacion')
+                    estacion.estado = request.POST.get('nuevo_estado')
+                    estacion.id_regla = id_regla_instancia
+                    estacion.id_tarifa = id_tarifa_instancia
+                    if dir_estacion_form is not "":
+                        if not Estaciones.objects.filter(dir_mac=nueva_dir).exists():
+                            estacion.dir_mac = nueva_dir
+                        else:
+                            mac_existe = "Ya existe una estación con la dirección MAC especificada."
+                        
+                    if estacion.dir_mac is not None and mac_existe is None:
+                        estacion.save()
+                        resultado = "Cambios guardados exitosamente! :)"
+                    elif mac_existe is not None:
+                        resultado = mac_existe
+                    else:
+                        resultado = f"Error: La dirección MAC no está en el formato solicitado. Use 00:11:22:33:44:55."
+            except IntegrityError:
+                resultado = "Ocurrió un error al intentar actualizar la estación."
         else:
             resultado = "Error en solicitud POST"
     
@@ -114,5 +157,7 @@ def estatus(request):
         'estaciones' : estaciones,
         'resultado' : resultado,
         'page_obj' : page_obj,
+        'tarifas' : tarifas,
+        'reglas' : reglas,
     }
     return HttpResponse(template.render(context, request))

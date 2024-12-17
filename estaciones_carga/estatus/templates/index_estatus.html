@@ -38,7 +38,7 @@
 				<nav>
 					<ul>
 						<li>
-							<a href="{% url 'inicio' %}">
+							<a href="{% url 'inicio' %}" onclick="localStorage.setItem('lastSelectedSection', 'seccion_estado');">
 								<img src="{% static 'icons/house-chimney-blank-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
 								Inicio
 							</a>
@@ -66,7 +66,7 @@
 							</a>
 						</li>
 					</ul>
-					
+
 					<ul>
 						<li>
 							<a href="#" data-section="seccion_nueva_estacion">
@@ -78,7 +78,7 @@
 				</nav>
 
 			</div>
-			
+
 			<!-- ----------------------- -->
 			<!-- Contenedor de Secciones -->
 			<!-- ----------------------- -->
@@ -179,20 +179,194 @@
 						</table>
 					</div>
 
-					{% if resultado %}
-						<script>
-							alert(" {{ resultado }} ");
-						</script>
-					{% endif %}
-
 					<details>
 						<summary>
-							<p><br></p>
+							<a onclick="showSection('seccion_modificar');" class="red-button">
+								Modificar
+							</a>
 						</summary>
 					</details>
 
 				</section>
 				
+				
+				<!-- Sección "Modificar estaciones" -->
+				<section id='seccion_modificar' style="display:none">
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Modificar Estaciones
+						</h1>
+						<p style="font-size:17px;text-align: justify;margin: 30px;">
+							Modifica los valores de las estaciones.
+						</p>
+					</div>
+
+					<div class="nice-form-group" >
+						<table>
+							<tr>
+								<th>ID</th>
+								<th>Nombre</th>
+								<th>Ubicación</th>
+								<th>Estado</th>
+								<th>Acción</th>
+							</tr>
+
+							{% for estacion in estaciones %}
+								<form id="form-modifica-estacion-{{forloop.counter}}" method="POST" onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_modifica_estacion');">
+
+									{% csrf_token %}
+
+									<!-- Datos por fila ocultos, necesarios para la solicitud POST -->
+									<input form="form-modifica-estacion-{{forloop.counter}}" type="hidden"
+										id="id_formulario"
+										name="id_formulario"
+										value="4"
+									>
+									<input form="form-modifica-estacion-{{forloop.counter}}" type="hidden"
+										id="id_estacion"
+										name="id_estacion"
+										value="{{ estacion.id }}"
+									>
+
+									<!-- Fila de datos a mostrar por registro -->
+									<tr>
+
+										<td>{{ estacion.id }}</td>
+
+										<td>{{ estacion.nombre }}</td>
+
+										<td style="text-align: center;">
+											<a {%if estacion.ubicacion%}href="{{ estacion.ubicacion }}"{%endif%}>
+												Link
+											</a>
+										</td>
+
+										<td style="text-align: center;">
+											<p
+												class="
+													{% if estacion.estado == 'Disponible' %}
+														boton_disponible
+													{% elif estacion.estado == 'No disponible' %}
+														boton_no_disponible
+													{% elif estacion.estado == 'Fuera de servicio' %}
+														boton_fuera_servicio
+													{% else %}
+														boton_mantenimiento
+													{% endif %}
+												"
+												style="width:100%"
+											>
+												{{ estacion.estado }}
+											</p>
+										</td>
+
+										<td style="text-align: center;">
+											<input
+												form="form-modifica-estacion-{{forloop.counter}}"
+												type="submit"
+												value="Editar"
+												class="boton_mantenimiento"
+												style="width:100%">
+											</input>
+										</td>
+
+									</tr>
+								</form>
+
+							{% endfor %}
+
+						</table>
+					</div>
+
+					<details>
+						<summary>
+							<a  href="#" data-section="seccion_estado" class="red-button">
+								Regresar
+							</a>
+						</summary>
+					</details>
+					
+				</section>
+				
+				<!-- Sección "Modificar Estacion" -->
+				<section id='seccion_modifica_estacion' style="display:none">
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Modificar Estación
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Modifica los datos de la estación.
+						</p>
+					</div>
+
+
+					<form id="form_modifica_estacion" method="post" action="" onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_estado')">
+						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+						{% csrf_token %}
+						<input form="form_modifica_estacion" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="5"
+						>
+						<input form="form_modifica_estacion" type="hidden"
+								id="id_estacion_modificar"
+								name="id_estacion_modificar"
+								value="{{request.POST.id_estacion}}"
+						>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="nuevo_nombre_estacion">Nombre</label>
+							<input type="text" id="nuevo_nombre_estacion" name="nuevo_nombre_estacion" form="form_modifica_estacion" placeholder="Agrega un nombre para la estación" value="{% for estacion in estaciones %}{% if estacion.id|stringformat:'s' == request.POST.id_estacion %}{{estacion.nombre}}{% endif %}{% endfor %}" required>
+						</div>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="nueva_ubicacion">Ubicación</label>
+							<input type="url" id="nueva_ubicacion" name="nueva_ubicacion" form="form_modifica_estacion" placeholder="Agrega una ubicación" value="{% for estacion in estaciones %}{% if estacion.id|stringformat:'s' == request.POST.id_estacion %}{{estacion.ubicacion}}{% endif %}{% endfor %}" required>
+						</div>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="nuevo_estado">Estado</label>
+							<select id="nuevo_estado" name="nuevo_estado" form="form_modifica_estacion" required>
+								<option value="">Selecciona un estado</option>
+								<option value="Disponible">Disponible</option>
+								<option value="No disponible">No disponible</option>
+								<option value="Fuera de servicio">Fuera de servicio</option>
+								<option value="En mantenimiento">En mantenimiento</option>
+							</select>
+						</div>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="nueva_direccion">Nueva dirección física (Opcional)</label>
+							<input type="text" id="nueva_direccion" name="nueva_direccion" form="form_modifica_estacion" placeholder="00:00:00:00:00:00" value="" minlength="17" maxlength="17">
+						</div>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="nueva_regla">Regla</label>
+							<select id="nueva_regla" name="nueva_regla" form="form_modifica_estacion" required>
+								<option value="">Selecciona una regla</option>
+								{%for regla in reglas%}
+									<option value="{{regla.id}}">{{regla.nombre}}</option>
+								{%endfor%}
+							</select>
+						</div>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="nueva_tarifa">Tarifa</label>
+							<select id="nueva_tarifa" name="nueva_tarifa" form="form_modifica_estacion" required>
+								<option value="">Selecciona una tarifa</option>
+								{%for tarifa in tarifas%}
+									<option value="{{tarifa.id}}">{{tarifa.descripcion}}</option>
+								{%endfor%}
+							</select>
+						</div>
+					</form>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							<button type="submit" form="form_modifica_estacion" style="min-width: fit-content" class="red-button">
+								Guardar cambios
+							</button>
+						</summary>
+					</details>
+
+				</section>
+
 
 				<!-- Sección "Mediciones" -->
 				<section id="seccion_mediciones" style="display:none">
@@ -267,12 +441,12 @@
 						<span class="current" >
 							<strong>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</strong>
 						</span>
-						
+
 					</div>
 
 					<details>
 						<summary style="text-align: right;">
-							
+
 							{% if page_obj %}
 
 								{% for valor in "12" %}
@@ -294,7 +468,7 @@
 										</form>
 										{% endif %}
 								{% endfor %}
-								
+
 								<span>
 									<div style="display: flex; align-items: center;">
 										{% for valor in "12" %}
@@ -322,13 +496,13 @@
 							{% else %}
 								<br>
 							{% endif %}
-							
+
 						</summary>
 					</details>
-					
+
 				</section>
-				
-				
+
+
 				<!-- Sección "Nueva Estacion" -->
 				<section id='seccion_nueva_estacion' style="display:none">
 					<div>
@@ -362,7 +536,7 @@
 								</div>
 								<input form="form-creacion" id="nombre_nueva_estacion" name="nombre_nueva_estacion" type="text" placeholder="Nombre de nueva estación" value="" required>
 							</div>
-							
+
 							<div class="nice-form-group" style="margin-top: 15px;margin-right: 15px;margin-bottom: 30px;margin-left: 15px;">
 								<div class="nice-form-group" style="margin-bottom: 15px;">
 									<h1>
@@ -374,7 +548,7 @@
 								</div>
 								<input form="form-creacion" id="dir_nueva_estacion" name="dir_nueva_estacion" type="text" placeholder="00:00:00:00:00:00" value="" required minlength="17" maxlength="17">
 							</div>
-							
+
 						</form>
 					</div>
 
@@ -382,18 +556,21 @@
 						<summary style="display: flex; justify-content: flex-end;">
 
 							<input type="submit" value="+ Crear" form="form-creacion" class="red-button">
-							
+
 						</summary>
 					</details>
 				</section>
 				
+				{% if resultado %}
+					<script>
+						alert(" {{ resultado }} ");
+					</script>
+				{% endif %}
+
 			</main>
-			
+
 		</div>
-		
+
 	</body>
 
 </html>
-
-
-

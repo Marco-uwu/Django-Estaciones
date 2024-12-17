@@ -139,7 +139,7 @@
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
 							
-							<a {% if request.GET.regla %}href="#" data-section="seccion_parametros"{% endif %} class="red-button" >
+							<a {% if request.GET.regla %}href="#" onclick="showSection('seccion_parametros')"{% endif %} class="red-button" >
 								<img src="{% static 'icons/file-plus-alt-svgrepo-com.svg' %}" width="24" height="24">
 								<span class="text">Modificar</span>
 							</a>

@@ -67,7 +67,7 @@ function validarFormulario(nombre_form, event) {
         const v_max = parseFloat(inputs[i + 2].value);
 
         // Validar que los valores sean mayores de 0 y menores de 999.99
-        if (!(v_min > 0 && v_min < 999.99 && v_ide > 0 && v_ide < 999.99 && v_max > 0 && v_max < 999.99)) {
+        if (!(v_min >= 0 && v_min <= 999.99 && v_ide >= 0 && v_ide <= 999.99 && v_max >= 0 && v_max <= 999.99)) {
             isValid = false;
             alert(`Los valores en la fila ${Math.floor(i / 3) + 1} deben ser mayores de 0 y menores de 999.99`);
             break; // Salir del bucle si hay un error
