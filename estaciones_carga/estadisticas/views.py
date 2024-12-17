@@ -7,6 +7,7 @@ from .models import *
 import warnings
 import paho.mqtt.client as mqtt
 from .decorators import admin_required
+from django.db import transaction, IntegrityError
 
 import matplotlib.pyplot as plt
 import io
@@ -50,6 +51,22 @@ def estadisticas(request):
             mensaje = "Cambios guardados correctamente!"
         elif tipo_formulario == "4":
             mensaje = ""             
+        elif tipo_formulario == "5":
+            nueva_descipcion = request.POST.get('descripcion_tarifa')
+            nuevo_precio = request.POST.get('precio_tarifa')
+            nueva_moneda = request.POST.get('moneda_tarifa')
+            
+            try:
+                with transaction.atomic():
+                    nueva_tarifa = Tarifas(
+                                    descripcion= nueva_descipcion,
+                                    precio=nuevo_precio,
+                                    moneda=nueva_moneda
+                                )
+                    nueva_tarifa.save()
+                    mensaje = "Tarifa creada exitosamente!"
+            except IntegrityError:
+                mensaje = "Ocurrió un error al crear la tarifa."
         else:
             mensaje = "Error: Solicitud POST inválida"
 

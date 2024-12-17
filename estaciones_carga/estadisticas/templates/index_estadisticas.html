@@ -74,6 +74,14 @@
 							</a>
 						</li>
 					</ul>
+					<ul>
+						<li>
+							<a href="#" data-section="seccion_nueva_tarifa">
+								<img src="{% static 'icons/circle-dollar-svgrepo-com.svg' %}" width="24" height="24" style="margin-right: 15px;">
+								Nueva Tarifa
+							</a>
+						</li>
+					</ul>
 				</nav>
 			</div>
 
@@ -222,7 +230,7 @@
 												value="{{sesion.fecha_fin|date:"Y-m-d H:i:s"}}"
 										>
 									</form>
-									
+
 									<form id="recibo_sesion_{{sesion.id}}" method="post" action="{% url 'generar_pdf' %}" onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_sesiones')">
 										<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
 										{% csrf_token %}
@@ -232,7 +240,7 @@
 											value="{{sesion.id}}"
 										>
 									</form>
-									
+
 									<tr>
 										<td>{{sesion.id}}</td>
 										<td>{{sesion.id_estacion.nombre}}</td>
@@ -393,6 +401,56 @@
 					<details>
 						<summary style="display: flex; justify-content: flex-end;">
 							<button type="submit" form="form_modifica_tarifa" style="min-width: fit-content" class="red-button">
+								Guardar cambios
+							</button>
+						</summary>
+					</details>
+
+				</section>
+				
+				<!-- Sección "Modificar Tarifas" -->
+				<section id='seccion_nueva_tarifa' style="display:none">
+
+					<div>
+						<h1 style="color:black;font-size:35px;text-align: center;">
+							Nueva tarifa
+						</h1>
+						<p style="font-size:17px;text-align: left;margin: 30px;">
+							Crea una nueva tarifa.
+						</p>
+					</div>
+
+
+					<form id="form_nueva_tarifa" method="post" action="" onsubmit="localStorage.setItem('lastSelectedSection', 'seccion_tarifas')">
+						<!-- Datos de formulario ocultos, necesarios para la solicitud POST -->
+						{% csrf_token %}
+						<input form="form_nueva_tarifa" type="hidden"
+								id="id_formulario"
+								name="id_formulario"
+								value="5"
+						>
+						<input form="form_nueva_tarifa" type="hidden"
+								id="tarifa"
+								name="tarifa"
+								value="{% for tarifa in tarifas %}{% if tarifa.id|stringformat:"s" == request.POST.tarifa %}{{tarifa.id}}{% endif %}{% endfor %}"
+						>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="descripcion_tarifa">Descripción</label>
+							<input type="text" id="descripcion_tarifa" name="descripcion_tarifa" form="form_nueva_tarifa" placeholder="Agrega una descripción" value="" required>
+						</div>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="precio_tarifa">Precio</label>
+							&#09;$ &#09;<input type="number" id="precio_tarifa" name="precio_tarifa" form="form_nueva_tarifa" step="0.01" placeholder="5.99" value="" min="0" max="999.99" required>
+						</div>
+						<div class="nice-form-group" style="margin: 5%">
+							<label for="moneda_tarifa">Moneda</label>
+							<input type="text" id="moneda_tarifa" name="moneda_tarifa" form="form_nueva_tarifa" placeholder="MXN" value="" required minlength="3" maxlength="3">
+						</div>
+					</form>
+
+					<details>
+						<summary style="display: flex; justify-content: flex-end;">
+							<button type="submit" form="form_nueva_tarifa" style="min-width: fit-content" class="red-button">
 								Guardar cambios
 							</button>
 						</summary>
