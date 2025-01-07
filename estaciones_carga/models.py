@@ -142,7 +142,7 @@ class InicioUserprofile(models.Model):
 
 
 class Mediciones(models.Model):
-    valor = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    valor = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
     fecha = models.DateTimeField()
     id_estacion = models.ForeignKey(Estaciones, models.DO_NOTHING, db_column='id_estacion', blank=True, null=True)
     id_tipo_medicion = models.ForeignKey('TiposMedicion', models.DO_NOTHING, db_column='id_tipo_medicion', blank=True, null=True)
@@ -185,6 +185,7 @@ class SesionesCarga(models.Model):
     fecha_inicio = models.DateTimeField()
     fecha_fin = models.DateTimeField(blank=True, null=True)
     id_estacion = models.ForeignKey(Estaciones, models.DO_NOTHING, db_column='id_estacion')
+    tarifa_aplicada = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
     class Meta:
         managed = False

@@ -58,6 +58,7 @@ class SesionesCarga(models.Model):
     fecha_inicio = models.DateTimeField()
     fecha_fin = models.DateTimeField(blank=True, null=True)
     id_estacion = models.ForeignKey(Estaciones, models.DO_NOTHING, db_column='id_estacion')
+    tarifa_aplicada = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
     class Meta:
         managed = False

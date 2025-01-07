@@ -102,7 +102,7 @@ def generar_pdf(request):
         
         mediciones_potencia = Mediciones.objects.filter(id_estacion=dato.id_estacion.id, fecha__range=[dato.fecha_inicio, dato.fecha_fin], id_tipo_medicion=9)
         
-        precio_total = ((float(mediciones_potencia[0].valor) * tiempo_decimal)/1000) * float(dato.id_estacion.id_tarifa.precio)
+        precio_total = ((float(mediciones_potencia[0].valor) * tiempo_decimal)/1000) * float(dato.tarifa_aplicada)
         precio_total = round(precio_total, 2)
 
         # Crear un objeto HttpResponse con el tipo de contenido PDF
@@ -148,7 +148,7 @@ def generar_pdf(request):
         y -= 20
         p.drawString(x, y, f"\"{dato.id_estacion.nombre}\"")
         y -= 20
-        p.drawString(x, y, f"$ {dato.id_estacion.id_tarifa.precio} {dato.id_estacion.id_tarifa.moneda}")
+        p.drawString(x, y, f"$ {dato.tarifa_aplicada} {dato.id_estacion.id_tarifa.moneda}")
         y -= 40
         p.drawString(x, y, f"{dato.fecha_inicio}")
         y -= 20
